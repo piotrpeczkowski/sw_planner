@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sw_planner/notes.dart';
+import 'package:sw_planner/tasks.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -54,12 +56,24 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.task_alt),
             title: const Text('Zadania'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const TasksPage(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.notes),
             title: const Text('Notatki'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const NotesPage(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.calendar_month),
