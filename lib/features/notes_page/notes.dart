@@ -13,7 +13,6 @@ class NotesPage extends StatelessWidget {
         title: const Text('Notatki'),
       ),
       drawer: const CustomDrawer(),
-      //floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: AddNoteButton(
         onPressed: () {},
       ),
