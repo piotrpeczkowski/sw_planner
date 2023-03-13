@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sw_planner/custom_drawer.dart';
+import 'package:sw_planner/features/widgets/custom_drawer.dart';
 
 class NotesPage extends StatelessWidget {
   const NotesPage({

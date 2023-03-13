@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sw_planner/notes.dart';
-import 'package:sw_planner/tasks.dart';
+import 'package:sw_planner/features/notes_page/notes.dart';
+import 'package:sw_planner/features/tasks_page/tasks.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
