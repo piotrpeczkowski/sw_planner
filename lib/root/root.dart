@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sw_planner/features/tasks_page/tasks.dart';
+import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

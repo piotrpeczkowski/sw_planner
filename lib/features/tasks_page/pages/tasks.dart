@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sw_planner/features/add_task/pages/add_task.dart';
 import 'package:sw_planner/features/widgets/custom_drawer.dart';
 
 class TasksPage extends StatefulWidget {
@@ -32,7 +33,13 @@ class _TasksPageState extends State<TasksPage> {
       floatingActionButton: Visibility(
         visible: _currentIndex == 0 ? true : false,
         child: AddTaskButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const AddTask(),
+              ),
+            );
+          },
         ),
       ),
       body: Builder(builder: (context) {

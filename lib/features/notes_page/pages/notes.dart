@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sw_planner/features/add_note/pages/add_note.dart';
 import 'package:sw_planner/features/widgets/custom_drawer.dart';
 
 class NotesPage extends StatelessWidget {
@@ -14,7 +15,13 @@ class NotesPage extends StatelessWidget {
       ),
       drawer: const CustomDrawer(),
       floatingActionButton: AddNoteButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const AddNote(),
+            ),
+          );
+        },
       ),
       body: const Center(
         child: Text('Notatki'),
