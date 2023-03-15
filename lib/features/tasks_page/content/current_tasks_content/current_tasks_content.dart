@@ -13,6 +13,7 @@ class CurrentTasksContent extends StatelessWidget {
         //Text('Zadania bieżące'),
         TaskWidget(),
         TaskWidget(),
+        TaskWidget(),
       ],
     );
   }
