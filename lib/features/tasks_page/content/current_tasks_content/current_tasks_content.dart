@@ -8,12 +8,36 @@ class CurrentTasksContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        //Text('Zadania bieżące'),
-        TaskWidget(),
-        TaskWidget(),
-        TaskWidget(),
+    return Stack(
+      alignment: Alignment.topCenter,
+      fit: StackFit.expand,
+      children: [
+        ListView(
+          children: const [
+            //Text('Zadania bieżące'),
+            TaskWidget(),
+            TaskWidget(),
+            TaskWidget(),
+          ],
+        ),
+        Positioned(
+          bottom: 0,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.07,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Colors.white,
+                  Colors.white70,
+                  Colors.white.withOpacity(0.02)
+                ],
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
