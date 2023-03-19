@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TaskWidget extends StatefulWidget {
   const TaskWidget({
@@ -109,7 +110,7 @@ class TaskWidgetBody extends StatelessWidget {
               ),
               child: Text(
                 'Ostatnia aktualizacja: $taskEditDate',
-                style: const TextStyle(
+                style: GoogleFonts.lato(
                   color: Colors.white,
                   fontSize: 13,
                   fontStyle: FontStyle.italic,
@@ -164,7 +165,7 @@ class TaskWidgetBody extends StatelessWidget {
                           taskTitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: taskTitleMaxLines,
-                          style: const TextStyle(
+                          style: GoogleFonts.lato(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -191,18 +192,30 @@ class TaskWidgetBody extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Termin wykonania:'),
-                        Text(taskDeadlineDate),
+                        Text(
+                          'Termin wykonania:',
+                          style: GoogleFonts.lato(),
+                        ),
+                        Text(
+                          taskDeadlineDate,
+                          style: GoogleFonts.lato(),
+                        ),
                       ],
                     ),
                     const Divider(thickness: 1.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Priorytet:'),
+                        Text(
+                          'Priorytet:',
+                          style: GoogleFonts.lato(),
+                        ),
                         Row(
                           children: [
-                            Text(taskPriority),
+                            Text(
+                              taskPriority,
+                              style: GoogleFonts.lato(),
+                            ),
                             Padding(
                               padding: const EdgeInsets.only(left: 10.0),
                               child: Container(
@@ -225,10 +238,11 @@ class TaskWidgetBody extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Opis zadania:'),
+                          Text('Opis zadania:', style: GoogleFonts.lato()),
                           const Padding(padding: EdgeInsets.only(top: 10)),
                           Text(
                             taskDescription,
+                            style: GoogleFonts.lato(),
                             overflow: TextOverflow.ellipsis,
                             maxLines: taskDescriptionMaxLines,
                             textAlign: TextAlign.left,
@@ -237,7 +251,10 @@ class TaskWidgetBody extends StatelessWidget {
                       ),
                     ),
                     const Divider(thickness: 1.0),
-                    TextButton(onPressed: () {}, child: const Text('Edytuj'))
+                    TextButton(
+                      onPressed: () {},
+                      child: Text('Edytuj', style: GoogleFonts.kanit()),
+                    )
                   ],
                 ),
               ),

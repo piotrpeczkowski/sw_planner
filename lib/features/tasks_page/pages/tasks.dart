@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sw_planner/features/add_task/pages/add_task.dart';
 import 'package:sw_planner/features/tasks_page/content/current_tasks_content/current_tasks_content.dart';
 import 'package:sw_planner/features/tasks_page/content/ended_tasks_content/ended_tasks_content.dart';
@@ -20,7 +21,7 @@ class _TasksPageState extends State<TasksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Zadania'),
+        title: Text('Zadania', style: GoogleFonts.kanit()),
       ),
       bottomNavigationBar: TaskBottomNavBar(
         currentIndex: _currentIndex,
