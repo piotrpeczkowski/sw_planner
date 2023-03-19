@@ -11,8 +11,7 @@ class TaskWidget extends StatefulWidget {
 }
 
 class _TaskWidgetState extends State<TaskWidget> {
-  bool isTaskDescriptionTapped = false;
-  bool isTaskTitleTapped = false;
+  bool isTaskContainerExpanded = false;
   int taskDescriptionMaxLines = 3;
   int taskTitleMaxLines = 1;
   @override
@@ -27,33 +26,17 @@ class _TaskWidgetState extends State<TaskWidget> {
           'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
       taskDescriptionMaxLines: taskDescriptionMaxLines,
       taskTitleMaxLines: taskTitleMaxLines,
-      onTaskDescriptionTap: () {
+      isTaskContainerExpanded: isTaskContainerExpanded,
+      onTaskContainerTap: () {
         setState(() {
-          if (isTaskDescriptionTapped == false) {
-            isTaskDescriptionTapped = true;
-            isTaskTitleTapped = true;
+          if (isTaskContainerExpanded == false) {
+            isTaskContainerExpanded = true;
             taskDescriptionMaxLines = 15;
             taskTitleMaxLines = 3;
           } else {
-            isTaskDescriptionTapped = false;
-            isTaskTitleTapped = false;
+            isTaskContainerExpanded = false;
             taskDescriptionMaxLines = 3;
             taskTitleMaxLines = 1;
-          }
-        });
-      },
-      onTaskTitleTap: () {
-        setState(() {
-          if (isTaskTitleTapped == false) {
-            isTaskTitleTapped = true;
-            isTaskDescriptionTapped = true;
-            taskTitleMaxLines = 3;
-            taskDescriptionMaxLines = 15;
-          } else {
-            isTaskTitleTapped = false;
-            isTaskDescriptionTapped = false;
-            taskTitleMaxLines = 1;
-            taskDescriptionMaxLines = 3;
           }
         });
       },
@@ -71,8 +54,8 @@ class TaskWidgetBody extends StatelessWidget {
     required this.taskDescription,
     required this.taskDescriptionMaxLines,
     required this.taskTitleMaxLines,
-    required this.onTaskDescriptionTap,
-    required this.onTaskTitleTap,
+    required this.onTaskContainerTap,
+    required this.isTaskContainerExpanded,
     super.key,
   });
 
@@ -84,8 +67,8 @@ class TaskWidgetBody extends StatelessWidget {
   final String taskDescription;
   final int taskDescriptionMaxLines;
   final int taskTitleMaxLines;
-  final Function() onTaskDescriptionTap;
-  final Function() onTaskTitleTap;
+  final Function() onTaskContainerTap;
+  final bool isTaskContainerExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -119,28 +102,28 @@ class TaskWidgetBody extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 15),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.4),
-                spreadRadius: 0.2,
-                blurRadius: 1.0,
-                offset: const Offset(0, 1),
+        GestureDetector(
+          onTap: onTaskContainerTap,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 15),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
               ),
-            ],
-          ),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: onTaskTitleTap,
-                child: Container(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.4),
+                  spreadRadius: 0.2,
+                  blurRadius: 1.0,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Container(
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
                   decoration: const BoxDecoration(
@@ -175,67 +158,52 @@ class TaskWidgetBody extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                    color: Colors.white,
                   ),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Termin wykonania:',
-                          style: GoogleFonts.lato(),
-                        ),
-                        Text(
-                          taskDeadlineDate,
-                          style: GoogleFonts.lato(),
-                        ),
-                      ],
-                    ),
-                    const Divider(thickness: 1.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Priorytet:',
-                          style: GoogleFonts.lato(),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              taskPriority,
-                              style: GoogleFonts.lato(),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Container(
-                                width: 14,
-                                height: 14,
-                                color: taskPriority == 'Wysoki'
-                                    ? Colors.red
-                                    : taskPriority == 'Średni'
-                                        ? Colors.yellow
-                                        : Colors.green,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Termin wykonania:', style: GoogleFonts.lato()),
+                          Text(taskDeadlineDate, style: GoogleFonts.lato()),
+                        ],
+                      ),
+                      const Divider(thickness: 1.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Priorytet:', style: GoogleFonts.lato()),
+                          Row(
+                            children: [
+                              Text(taskPriority, style: GoogleFonts.lato()),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Container(
+                                  width: 14,
+                                  height: 14,
+                                  color: taskPriority == 'Wysoki'
+                                      ? Colors.red
+                                      : taskPriority == 'Średni'
+                                          ? Colors.yellow
+                                          : Colors.green,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Divider(thickness: 1.0),
-                    GestureDetector(
-                      onTap: onTaskDescriptionTap,
-                      child: Column(
+                            ],
+                          ),
+                        ],
+                      ),
+                      const Divider(thickness: 1.0),
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Opis zadania:', style: GoogleFonts.lato()),
@@ -249,16 +217,24 @@ class TaskWidgetBody extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ),
-                    const Divider(thickness: 1.0),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text('Edytuj', style: GoogleFonts.kanit()),
-                    )
-                  ],
+                      Visibility(
+                        visible: isTaskContainerExpanded,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Divider(thickness: 1.0),
+                            TextButton(
+                              onPressed: () {},
+                              child: Text('Edytuj', style: GoogleFonts.kanit()),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
