@@ -12,7 +12,7 @@ class TaskWidget extends StatelessWidget {
       taskTitle: 'Przykładowy tytuł taska',
       taskEditDate: '10.03.2023',
       taskDeadlineDate: '31.03.2023, 15:00',
-      taskPriority: 'Normalny',
+      taskPriority: 'Niski',
       taskDescription:
           'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
     );
@@ -156,7 +156,11 @@ class TaskWidgetBody extends StatelessWidget {
                               child: Container(
                                 width: 14,
                                 height: 14,
-                                color: Colors.red,
+                                color: taskPriority == 'Wysoki'
+                                    ? Colors.red
+                                    : taskPriority == 'Średni'
+                                        ? Colors.yellow
+                                        : Colors.green,
                               ),
                             ),
                           ],
