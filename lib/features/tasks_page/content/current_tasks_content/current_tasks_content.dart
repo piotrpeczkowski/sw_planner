@@ -14,10 +14,10 @@ class CurrentTasksContent extends StatelessWidget {
       children: [
         ListView(
           children: const [
-            //Text('Zadania bieżące'),
             TaskWidget(),
             TaskWidget(),
             TaskWidget(),
+            SizedBox(height: 50),
           ],
         ),
         Positioned(

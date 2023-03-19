@@ -31,8 +31,8 @@ class NotesPage extends StatelessWidget {
         children: [
           ListView(
             children: const [
-              //Text('Notatki'),
               NoteWidget(),
+              SizedBox(height: 50),
             ],
           ),
           Positioned(
