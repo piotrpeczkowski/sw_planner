@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sw_planner/features/add_note/pages/add_note.dart';
+import 'package:sw_planner/features/notes_page/widgets/note_widget.dart';
 import 'package:sw_planner/features/widgets/custom_drawer.dart';
 
 class NotesPage extends StatelessWidget {
@@ -11,7 +13,7 @@ class NotesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notatki'),
+        title: Text('Notatki', style: GoogleFonts.kanit()),
       ),
       drawer: const CustomDrawer(),
       floatingActionButton: AddNoteButton(
@@ -23,8 +25,35 @@ class NotesPage extends StatelessWidget {
           );
         },
       ),
-      body: const Center(
-        child: Text('Notatki'),
+      body: Stack(
+        alignment: Alignment.topCenter,
+        fit: StackFit.expand,
+        children: [
+          ListView(
+            children: const [
+              //Text('Notatki'),
+              NoteWidget(),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.07,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.white,
+                    Colors.white70,
+                    Colors.white.withOpacity(0.02)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
