@@ -21,7 +21,7 @@ class CustomDrawer extends StatelessWidget {
               right: 20,
             ),
             decoration: const BoxDecoration(
-              color: Colors.blue,
+              color: Color.fromARGB(255, 84, 152, 255),
             ),
             child: Column(
               children: const [
