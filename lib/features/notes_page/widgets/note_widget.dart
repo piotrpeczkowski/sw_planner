@@ -11,8 +11,7 @@ class NoteWidget extends StatefulWidget {
 }
 
 class _NoteWidgetState extends State<NoteWidget> {
-  bool isNoteDescriptionTapped = false;
-  bool isNoteTitleTapped = false;
+  bool isNoteContainerTapped = false;
   int noteDescriptionMaxLines = 3;
   int noteTitleMaxLines = 1;
   @override
@@ -27,33 +26,17 @@ class _NoteWidgetState extends State<NoteWidget> {
           'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
       noteDescriptionMaxLines: noteDescriptionMaxLines,
       noteTitleMaxLines: noteTitleMaxLines,
-      onNoteDescriptionTap: () {
+      isNoteContainerTapped: isNoteContainerTapped,
+      onNoteContainerTap: () {
         setState(() {
-          if (isNoteDescriptionTapped == false) {
-            isNoteDescriptionTapped = true;
-            isNoteTitleTapped = true;
+          if (isNoteContainerTapped == false) {
+            isNoteContainerTapped = true;
             noteDescriptionMaxLines = 15;
             noteTitleMaxLines = 3;
           } else {
-            isNoteDescriptionTapped = false;
-            isNoteTitleTapped = false;
+            isNoteContainerTapped = false;
             noteDescriptionMaxLines = 3;
             noteTitleMaxLines = 1;
-          }
-        });
-      },
-      onNoteTitleTap: () {
-        setState(() {
-          if (isNoteTitleTapped == false) {
-            isNoteTitleTapped = true;
-            isNoteDescriptionTapped = true;
-            noteTitleMaxLines = 3;
-            noteDescriptionMaxLines = 15;
-          } else {
-            isNoteTitleTapped = false;
-            isNoteDescriptionTapped = false;
-            noteTitleMaxLines = 1;
-            noteDescriptionMaxLines = 3;
           }
         });
       },
@@ -71,8 +54,8 @@ class NoteWidgetBody extends StatelessWidget {
     required this.noteDescription,
     required this.noteDescriptionMaxLines,
     required this.noteTitleMaxLines,
-    required this.onNoteDescriptionTap,
-    required this.onNoteTitleTap,
+    required this.onNoteContainerTap,
+    required this.isNoteContainerTapped,
     super.key,
   });
 
@@ -84,8 +67,8 @@ class NoteWidgetBody extends StatelessWidget {
   final String noteDescription;
   final int noteDescriptionMaxLines;
   final int noteTitleMaxLines;
-  final Function() onNoteDescriptionTap;
-  final Function() onNoteTitleTap;
+  final Function() onNoteContainerTap;
+  final bool isNoteContainerTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -119,28 +102,28 @@ class NoteWidgetBody extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 15),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.4),
-                spreadRadius: 0.2,
-                blurRadius: 1.0,
-                offset: const Offset(0, 1),
+        GestureDetector(
+          onTap: onNoteContainerTap,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 15),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
               ),
-            ],
-          ),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: onNoteTitleTap,
-                child: Container(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.4),
+                  spreadRadius: 0.2,
+                  blurRadius: 1.0,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Container(
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
                   decoration: const BoxDecoration(
@@ -175,23 +158,20 @@ class NoteWidgetBody extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                    color: Colors.white,
                   ),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: onNoteDescriptionTap,
-                      child: Column(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -203,26 +183,35 @@ class NoteWidgetBody extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ),
-                    const Divider(thickness: 1.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        TextButton(
-                          onPressed: () {},
-                          child: Text('Edytuj', style: GoogleFonts.kanit()),
+                      Visibility(
+                        visible: isNoteContainerTapped,
+                        child: Column(
+                          children: [
+                            const Divider(thickness: 1.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Text('Edytuj',
+                                      style: GoogleFonts.kanit()),
+                                ),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Text('Usuń',
+                                      style:
+                                          GoogleFonts.kanit(color: Colors.red)),
+                                )
+                              ],
+                            )
+                          ],
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text('Usuń',
-                              style: GoogleFonts.kanit(color: Colors.red)),
-                        )
-                      ],
-                    )
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
