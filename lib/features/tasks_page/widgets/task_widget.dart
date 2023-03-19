@@ -7,6 +7,38 @@ class TaskWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const TaskWidgetBody(
+      taskId: '',
+      taskTitle: 'Przykładowy tytuł taska',
+      taskEditDate: '10.03.2023',
+      taskDeadlineDate: '31.03.2023, 15:00',
+      taskPriority: 'Normalny',
+      taskDescription:
+          'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
+    );
+  }
+}
+
+class TaskWidgetBody extends StatelessWidget {
+  const TaskWidgetBody({
+    required this.taskId,
+    required this.taskTitle,
+    required this.taskEditDate,
+    required this.taskDeadlineDate,
+    required this.taskPriority,
+    required this.taskDescription,
+    super.key,
+  });
+
+  final String taskId;
+  final String taskTitle;
+  final String taskEditDate;
+  final String taskDeadlineDate;
+  final String taskPriority;
+  final String taskDescription;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -26,9 +58,9 @@ class TaskWidget extends StatelessWidget {
                 ),
                 color: Color.fromARGB(255, 13, 71, 161),
               ),
-              child: const Text(
-                'Ostatnia aktualizacja: 10.03.2023',
-                style: TextStyle(
+              child: Text(
+                'Ostatnia aktualizacja: $taskEditDate',
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 13,
                   fontStyle: FontStyle.italic,
@@ -74,14 +106,14 @@ class TaskWidget extends StatelessWidget {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 5, bottom: 5),
+                      padding: const EdgeInsets.only(top: 5, bottom: 5),
                       child: Text(
-                        'Przykładowy tytuł zadania, który jest dłuższy niż przeciętny tytuł',
+                        taskTitle,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -106,9 +138,9 @@ class TaskWidget extends StatelessWidget {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text('Termin wykonania:'),
-                        Text('31.03.2023, 15:00'),
+                      children: [
+                        const Text('Termin wykonania:'),
+                        Text(taskDeadlineDate),
                       ],
                     ),
                     const Divider(thickness: 1.0),
@@ -118,11 +150,14 @@ class TaskWidget extends StatelessWidget {
                         const Text('Priorytet:'),
                         Row(
                           children: [
-                            const Text('Wysoki  '),
-                            Container(
-                              width: 14,
-                              height: 14,
-                              color: Colors.red,
+                            Text(taskPriority),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Container(
+                                width: 14,
+                                height: 14,
+                                color: Colors.red,
+                              ),
                             ),
                           ],
                         ),
@@ -131,8 +166,8 @@ class TaskWidget extends StatelessWidget {
                     const Divider(thickness: 1.0),
                     const Text('Opis zadania:'),
                     const Padding(padding: EdgeInsets.only(top: 10)),
-                    const Text(
-                      'To przykładowy opis zadania, które zostanie wykonane w przyszłości lub anulowane. Można tu zawrzeć wszystkie niezbędne informacje związane z taskiem, a za długie elementy zostaną przycięte.',
+                    Text(
+                      taskDescription,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
                       textAlign: TextAlign.left,
