@@ -11,7 +11,7 @@ class NoteWidget extends StatefulWidget {
 }
 
 class _NoteWidgetState extends State<NoteWidget> {
-  bool isNoteContainerTapped = false;
+  bool isNoteContainerExpanded = false;
   int noteDescriptionMaxLines = 3;
   int noteTitleMaxLines = 1;
   @override
@@ -26,15 +26,15 @@ class _NoteWidgetState extends State<NoteWidget> {
           'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
       noteDescriptionMaxLines: noteDescriptionMaxLines,
       noteTitleMaxLines: noteTitleMaxLines,
-      isNoteContainerTapped: isNoteContainerTapped,
+      isNoteContainerExpanded: isNoteContainerExpanded,
       onNoteContainerTap: () {
         setState(() {
-          if (isNoteContainerTapped == false) {
-            isNoteContainerTapped = true;
+          if (isNoteContainerExpanded == false) {
+            isNoteContainerExpanded = true;
             noteDescriptionMaxLines = 15;
             noteTitleMaxLines = 3;
           } else {
-            isNoteContainerTapped = false;
+            isNoteContainerExpanded = false;
             noteDescriptionMaxLines = 3;
             noteTitleMaxLines = 1;
           }
@@ -55,7 +55,7 @@ class NoteWidgetBody extends StatelessWidget {
     required this.noteDescriptionMaxLines,
     required this.noteTitleMaxLines,
     required this.onNoteContainerTap,
-    required this.isNoteContainerTapped,
+    required this.isNoteContainerExpanded,
     super.key,
   });
 
@@ -68,7 +68,7 @@ class NoteWidgetBody extends StatelessWidget {
   final int noteDescriptionMaxLines;
   final int noteTitleMaxLines;
   final Function() onNoteContainerTap;
-  final bool isNoteContainerTapped;
+  final bool isNoteContainerExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -85,12 +85,11 @@ class NoteWidgetBody extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-                color: Color.fromARGB(255, 13, 71, 161),
-              ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
+                  color: Color.fromARGB(255, 13, 71, 161)),
               child: Text(
                 'Ostatnia aktualizacja: $noteEditDate',
                 style: GoogleFonts.lato(
@@ -135,7 +134,7 @@ class NoteWidgetBody extends StatelessWidget {
                       end: Alignment.topRight,
                       colors: [
                         Color.fromARGB(255, 13, 71, 161),
-                        Color.fromARGB(255, 84, 152, 255),
+                        Color.fromARGB(255, 84, 152, 255)
                       ],
                     ),
                   ),
@@ -184,7 +183,7 @@ class NoteWidgetBody extends StatelessWidget {
                         ],
                       ),
                       Visibility(
-                        visible: isNoteContainerTapped,
+                        visible: isNoteContainerExpanded,
                         child: Column(
                           children: [
                             const Divider(thickness: 1.0),

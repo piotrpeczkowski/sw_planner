@@ -32,6 +32,10 @@ class NotesPage extends StatelessWidget {
           ListView(
             children: const [
               NoteWidget(),
+              NoteWidget(),
+              NoteWidget(),
+              NoteWidget(),
+              NoteWidget(),
               SizedBox(height: 50),
             ],
           ),
