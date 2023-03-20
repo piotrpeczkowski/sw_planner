@@ -20,7 +20,7 @@ class NotesPage extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => const AddNote(),
+              builder: (context) => AddNote(),
             ),
           );
         },
