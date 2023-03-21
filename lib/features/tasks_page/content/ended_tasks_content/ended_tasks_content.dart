@@ -9,7 +9,11 @@ class EndedTasksContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: const [
-        Text('Zakończone zadania'),
+        Center(
+            child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text('Zakończone zadania'),
+        )),
       ],
     );
   }
