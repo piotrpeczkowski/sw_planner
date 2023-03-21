@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sw_planner/features/notes_page/pages/notes.dart';
 import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
+import 'package:sw_planner/features/user_profile/pages/profile_page.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -17,6 +18,13 @@ class CustomDrawer extends StatelessWidget {
         userEmail: 'andrzej.grabowski@sw.gov.pl',
         userAvatarUrl:
             'https://cdn.galleries.smcloud.net/t/galleries/gf-HHdG-8NLP-4Av5_nie-uwierzycie-co-andrzej-grabowski-wystawil-na-licytacje-wosp-994x828.jpg',
+        userProfileNavLink: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => UserProfilePage(),
+            ),
+          );
+        },
         // First navigator
         firstNavIcon: const Icon(Icons.task_alt),
         firstNavTitle: 'Zadania',
@@ -55,6 +63,7 @@ class CustomDrawerBody extends StatelessWidget {
     required this.userName,
     required this.userEmail,
     required this.userAvatarUrl,
+    required this.userProfileNavLink,
     required this.firstNavIcon,
     required this.firstNavTitle,
     required this.firstNavLink,
@@ -73,6 +82,7 @@ class CustomDrawerBody extends StatelessWidget {
   final String userName;
   final String userEmail;
   final String userAvatarUrl;
+  final Function() userProfileNavLink;
   final Icon firstNavIcon;
   final String firstNavTitle;
   final Function() firstNavLink;
@@ -108,39 +118,42 @@ class CustomDrawerBody extends StatelessWidget {
               ],
             ),
           ),
-          child: Column(
-            children: [
-              userAvatarUrl != ''
-                  ? CircleAvatar(
-                      radius: 60,
-                      backgroundImage: NetworkImage(userAvatarUrl),
-                    )
-                  : const CircleAvatar(
-                      radius: 60,
-                      child: FlutterLogo(
-                        size: 70,
+          child: InkWell(
+            onTap: userProfileNavLink,
+            child: Column(
+              children: [
+                userAvatarUrl != ''
+                    ? CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(userAvatarUrl),
+                      )
+                    : const CircleAvatar(
+                        radius: 60,
+                        child: FlutterLogo(
+                          size: 70,
+                        ),
                       ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10.0,
+                  ),
+                  child: Text(
+                    userName,
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontSize: 18,
                     ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10.0,
-                ),
-                child: Text(
-                  userName,
-                  style: GoogleFonts.lato(
-                    color: Colors.white,
-                    fontSize: 18,
                   ),
                 ),
-              ),
-              Text(
-                userEmail,
-                style: GoogleFonts.lato(
-                  color: Colors.white,
-                  fontSize: 16,
+                Text(
+                  userEmail,
+                  style: GoogleFonts.lato(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Container(
