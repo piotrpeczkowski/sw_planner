@@ -36,14 +36,14 @@ class NotesPage extends StatelessWidget {
               NoteWidget(),
               NoteWidget(),
               NoteWidget(),
-              SizedBox(height: 50),
+              SizedBox(height: 100),
             ],
           ),
           Positioned(
             bottom: 0,
             child: Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.07,
+              height: MediaQuery.of(context).size.height * 0.15,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
