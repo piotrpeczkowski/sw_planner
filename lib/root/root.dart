@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,6 +27,14 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('pl', 'PL'),
+      ],
       home: const TasksPage(),
     );
   }
