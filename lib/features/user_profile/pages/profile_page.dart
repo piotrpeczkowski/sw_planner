@@ -92,11 +92,25 @@ class UserProfilePageBody extends StatelessWidget {
                           ),
                         ],
                       )
-                    : const CircleAvatar(
-                        radius: 60,
-                        child: FlutterLogo(
-                          size: 70,
-                        ),
+                    : Stack(
+                        children: [
+                          const CircleAvatar(
+                            radius: 60,
+                            child: FlutterLogo(
+                              size: 70,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white.withOpacity(0.85),
+                              child: const Icon(
+                                Icons.add_a_photo,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -133,6 +147,7 @@ class UserProfilePageBody extends StatelessWidget {
             ),
           ),
           ListView(
+            padding: const EdgeInsets.all(15),
             shrinkWrap: true,
             //physics: NeverScrollableScrollPhysics(),
             children: [
