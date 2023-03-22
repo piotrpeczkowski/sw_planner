@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sw_planner/features/calendar_page/pages/calendar_page.dart';
 import 'package:sw_planner/features/notes_page/pages/notes.dart';
 import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
 import 'package:sw_planner/features/user_profile/pages/profile_page.dart';
@@ -48,7 +49,13 @@ class CustomDrawer extends StatelessWidget {
         // Third navigator
         thirdNavIcon: const Icon(Icons.calendar_month),
         thirdNavTitle: 'Kalendarz',
-        thirdNavLink: () {},
+        thirdNavLink: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const CalendarPage(),
+            ),
+          );
+        },
         // Settings navigator
         settingsNavIcon: const Icon(Icons.settings),
         settingsNavTitle: 'Ustawienia',
