@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sw_planner/features/add_task/pages/add_task.dart';
-import 'package:sw_planner/features/tasks_page/content/current_tasks_content/current_tasks_content.dart';
-import 'package:sw_planner/features/tasks_page/content/ended_tasks_content/ended_tasks_content.dart';
+import 'package:sw_planner/features/tasks_page/content/current_tasks/current_tasks_content.dart';
+import 'package:sw_planner/features/tasks_page/content/ended_tasks/ended_tasks_content.dart';
 import 'package:sw_planner/features/widgets/custom_drawer.dart';
 
 class TasksPage extends StatefulWidget {
@@ -48,9 +48,9 @@ class _TasksPageState extends State<TasksPage> {
       body: Builder(
         builder: (context) {
           if (_currentIndex == 0) {
-            return const CurrentTasksContent();
+            return const CurrentTasks();
           }
-          return const EndedTasksContent();
+          return const EndedTasks();
         },
       ),
     );

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sw_planner/features/tasks_page/widgets/task_widget.dart';
 
-class CurrentTasksContent extends StatelessWidget {
-  const CurrentTasksContent({
+class CurrentTasks extends StatelessWidget {
+  const CurrentTasks({
     super.key,
   });
 

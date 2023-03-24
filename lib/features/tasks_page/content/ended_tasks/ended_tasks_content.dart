@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class EndedTasksContent extends StatelessWidget {
-  const EndedTasksContent({
+class EndedTasks extends StatelessWidget {
+  const EndedTasks({
     super.key,
   });
 
