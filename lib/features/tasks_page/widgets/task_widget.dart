@@ -11,10 +11,10 @@ class TaskWidget extends StatefulWidget {
 }
 
 class _TaskWidgetState extends State<TaskWidget> {
-  Color taskDetailsContainerColor = Colors.white;
-  bool isTaskContainerExpanded = false;
-  int taskDescriptionMaxLines = 3;
-  int taskTitleMaxLines = 1;
+  Color _taskDetailsContainerColor = Colors.white;
+  bool _isTaskContainerExpanded = false;
+  int _taskDescriptionMaxLines = 3;
+  int _taskTitleMaxLines = 1;
   @override
   Widget build(BuildContext context) {
     return TaskWidgetBody(
@@ -25,22 +25,23 @@ class _TaskWidgetState extends State<TaskWidget> {
       taskPriority: 'Niski',
       taskDescription:
           'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
-      taskDescriptionMaxLines: taskDescriptionMaxLines,
-      taskTitleMaxLines: taskTitleMaxLines,
-      taskDetailsContainerColor: taskDetailsContainerColor,
-      isTaskContainerExpanded: isTaskContainerExpanded,
+      taskDescriptionMaxLines: _taskDescriptionMaxLines,
+      taskTitleMaxLines: _taskTitleMaxLines,
+      taskDetailsContainerColor: _taskDetailsContainerColor,
+      isTaskContainerExpanded: _isTaskContainerExpanded,
       onTaskContainerTap: () {
         setState(() {
-          if (isTaskContainerExpanded == false) {
-            taskDetailsContainerColor = Color.fromARGB(255, 220, 239, 255);
-            isTaskContainerExpanded = true;
-            taskDescriptionMaxLines = 15;
-            taskTitleMaxLines = 3;
+          if (_isTaskContainerExpanded == false) {
+            _taskDetailsContainerColor =
+                const Color.fromARGB(255, 220, 239, 255);
+            _isTaskContainerExpanded = true;
+            _taskDescriptionMaxLines = 15;
+            _taskTitleMaxLines = 3;
           } else {
-            taskDetailsContainerColor = Colors.white;
-            isTaskContainerExpanded = false;
-            taskDescriptionMaxLines = 3;
-            taskTitleMaxLines = 1;
+            _taskDetailsContainerColor = Colors.white;
+            _isTaskContainerExpanded = false;
+            _taskDescriptionMaxLines = 3;
+            _taskTitleMaxLines = 1;
           }
         });
       },
