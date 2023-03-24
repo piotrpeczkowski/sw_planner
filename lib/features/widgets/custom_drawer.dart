@@ -52,7 +52,7 @@ class CustomDrawer extends StatelessWidget {
         thirdNavLink: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => const CalendarPage(),
+              builder: (context) => CalendarPage(),
             ),
           );
         },
