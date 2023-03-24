@@ -11,6 +11,7 @@ class TaskWidget extends StatefulWidget {
 }
 
 class _TaskWidgetState extends State<TaskWidget> {
+  Color taskDetailsContainerColor = Colors.white;
   bool isTaskContainerExpanded = false;
   int taskDescriptionMaxLines = 3;
   int taskTitleMaxLines = 1;
@@ -26,14 +27,17 @@ class _TaskWidgetState extends State<TaskWidget> {
           'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
       taskDescriptionMaxLines: taskDescriptionMaxLines,
       taskTitleMaxLines: taskTitleMaxLines,
+      taskDetailsContainerColor: taskDetailsContainerColor,
       isTaskContainerExpanded: isTaskContainerExpanded,
       onTaskContainerTap: () {
         setState(() {
           if (isTaskContainerExpanded == false) {
+            taskDetailsContainerColor = Color.fromARGB(255, 220, 239, 255);
             isTaskContainerExpanded = true;
             taskDescriptionMaxLines = 15;
             taskTitleMaxLines = 3;
           } else {
+            taskDetailsContainerColor = Colors.white;
             isTaskContainerExpanded = false;
             taskDescriptionMaxLines = 3;
             taskTitleMaxLines = 1;
@@ -56,6 +60,7 @@ class TaskWidgetBody extends StatelessWidget {
     required this.taskTitleMaxLines,
     required this.onTaskContainerTap,
     required this.isTaskContainerExpanded,
+    required this.taskDetailsContainerColor,
     super.key,
   });
 
@@ -69,6 +74,7 @@ class TaskWidgetBody extends StatelessWidget {
   final int taskTitleMaxLines;
   final Function() onTaskContainerTap;
   final bool isTaskContainerExpanded;
+  final Color taskDetailsContainerColor;
 
   @override
   Widget build(BuildContext context) {
@@ -161,12 +167,12 @@ class TaskWidgetBody extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(10),
                       bottomRight: Radius.circular(10),
                     ),
-                    color: Colors.white,
+                    color: taskDetailsContainerColor,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
