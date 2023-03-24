@@ -11,9 +11,10 @@ class NoteWidget extends StatefulWidget {
 }
 
 class _NoteWidgetState extends State<NoteWidget> {
-  bool isNoteContainerExpanded = false;
-  int noteDescriptionMaxLines = 3;
-  int noteTitleMaxLines = 1;
+  Color _noteDetailsContainerColor = Colors.white;
+  bool _isNoteContainerExpanded = false;
+  int _noteDescriptionMaxLines = 3;
+  int _noteTitleMaxLines = 1;
   @override
   Widget build(BuildContext context) {
     return NoteWidgetBody(
@@ -24,19 +25,23 @@ class _NoteWidgetState extends State<NoteWidget> {
       notePriority: 'Niski',
       noteDescription:
           'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
-      noteDescriptionMaxLines: noteDescriptionMaxLines,
-      noteTitleMaxLines: noteTitleMaxLines,
-      isNoteContainerExpanded: isNoteContainerExpanded,
+      noteDescriptionMaxLines: _noteDescriptionMaxLines,
+      noteTitleMaxLines: _noteTitleMaxLines,
+      noteDetailsContainerColor: _noteDetailsContainerColor,
+      isNoteContainerExpanded: _isNoteContainerExpanded,
       onNoteContainerTap: () {
         setState(() {
-          if (isNoteContainerExpanded == false) {
-            isNoteContainerExpanded = true;
-            noteDescriptionMaxLines = 15;
-            noteTitleMaxLines = 3;
+          if (_isNoteContainerExpanded == false) {
+            _noteDetailsContainerColor =
+                const Color.fromARGB(255, 220, 239, 255);
+            _isNoteContainerExpanded = true;
+            _noteDescriptionMaxLines = 15;
+            _noteTitleMaxLines = 3;
           } else {
-            isNoteContainerExpanded = false;
-            noteDescriptionMaxLines = 3;
-            noteTitleMaxLines = 1;
+            _noteDetailsContainerColor = Colors.white;
+            _isNoteContainerExpanded = false;
+            _noteDescriptionMaxLines = 3;
+            _noteTitleMaxLines = 1;
           }
         });
       },
@@ -56,6 +61,7 @@ class NoteWidgetBody extends StatelessWidget {
     required this.noteTitleMaxLines,
     required this.onNoteContainerTap,
     required this.isNoteContainerExpanded,
+    required this.noteDetailsContainerColor,
     super.key,
   });
 
@@ -69,6 +75,7 @@ class NoteWidgetBody extends StatelessWidget {
   final int noteTitleMaxLines;
   final Function() onNoteContainerTap;
   final bool isNoteContainerExpanded;
+  final Color noteDetailsContainerColor;
 
   @override
   Widget build(BuildContext context) {
@@ -160,12 +167,12 @@ class NoteWidgetBody extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(10),
                       bottomRight: Radius.circular(10),
                     ),
-                    color: Colors.white,
+                    color: noteDetailsContainerColor,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
