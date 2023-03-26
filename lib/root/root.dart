@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sw_planner/features/auth/login/pages/login_page.dart';
 import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         Locale('en', 'US'),
         Locale('pl', 'PL'),
       ],
-      home: const TasksPage(),
+      home: LoginPage(),
     );
   }
 }
@@ -49,5 +50,20 @@ class MyApp extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold();
+//   }
+// }
+
+// class RootPage extends StatelessWidget {
+//   const RootPage({
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder(
+//       stream: FirebaseAuth.instance.,
+//       builder: (BuildContext context, snapshot) {
+//         if() {}
+//     },);
 //   }
 // }
