@@ -60,6 +60,13 @@ class CustomDrawer extends StatelessWidget {
         settingsNavIcon: const Icon(Icons.settings),
         settingsNavTitle: 'Ustawienia',
         settingsNavLink: () {},
+        // Logout navigator
+        logoutNavIcon: const Icon(
+          Icons.logout,
+          color: Colors.red,
+        ),
+        logoutNavTitle: 'Wyloguj',
+        logoutNavLink: () {},
       ),
     );
   }
@@ -83,6 +90,9 @@ class CustomDrawerBody extends StatelessWidget {
     required this.settingsNavIcon,
     required this.settingsNavTitle,
     required this.settingsNavLink,
+    required this.logoutNavIcon,
+    required this.logoutNavTitle,
+    required this.logoutNavLink,
     super.key,
   });
 
@@ -102,6 +112,9 @@ class CustomDrawerBody extends StatelessWidget {
   final Icon settingsNavIcon;
   final String settingsNavTitle;
   final Function() settingsNavLink;
+  final Icon logoutNavIcon;
+  final String logoutNavTitle;
+  final Function() logoutNavLink;
 
   @override
   Widget build(BuildContext context) {
@@ -206,6 +219,15 @@ class CustomDrawerBody extends StatelessWidget {
             style: GoogleFonts.lato(fontSize: 16),
           ),
           onTap: settingsNavLink,
+        ),
+        const Divider(),
+        ListTile(
+          leading: logoutNavIcon,
+          title: Text(
+            logoutNavTitle,
+            style: GoogleFonts.lato(fontSize: 16),
+          ),
+          onTap: logoutNavLink,
         ),
       ],
     );
