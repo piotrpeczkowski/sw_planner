@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sw_planner/data/repositories/auth_repository.dart';
+import 'package:sw_planner/features/auth/login/cubit/login_cubit.dart';
 import 'package:sw_planner/features/calendar_page/pages/calendar_page.dart';
 import 'package:sw_planner/features/notes_page/pages/notes.dart';
 import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
@@ -26,7 +29,6 @@ class CustomDrawer extends StatelessWidget {
             ),
           );
         },
-        // First navigator
         firstNavIcon: const Icon(Icons.task_alt),
         firstNavTitle: 'Zadania',
         firstNavLink: () {
@@ -36,7 +38,6 @@ class CustomDrawer extends StatelessWidget {
             ),
           );
         },
-        // Second navigator
         secondNavIcon: const Icon(Icons.notes_outlined),
         secondNavTitle: 'Notatki',
         secondNavLink: () {
@@ -46,7 +47,6 @@ class CustomDrawer extends StatelessWidget {
             ),
           );
         },
-        // Third navigator
         thirdNavIcon: const Icon(Icons.calendar_month),
         thirdNavTitle: 'Kalendarz',
         thirdNavLink: () {
@@ -221,13 +221,32 @@ class CustomDrawerBody extends StatelessWidget {
           onTap: settingsNavLink,
         ),
         const Divider(),
-        ListTile(
-          leading: logoutNavIcon,
-          title: Text(
-            logoutNavTitle,
-            style: GoogleFonts.lato(fontSize: 16),
+        BlocProvider(
+          create: (context) => LoginCubit(AuthRepository()),
+          child: BlocBuilder<LoginCubit, LoginState>(
+            builder: (context, state) {
+              return ListTile(
+                leading: logoutNavIcon,
+                title: Text(
+                  logoutNavTitle,
+                  style: GoogleFonts.lato(fontSize: 16),
+                ),
+                onTap: () {
+                  try {
+                    context.read<LoginCubit>().signOut();
+                  } catch (error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        duration: const Duration(seconds: 4),
+                        backgroundColor: Colors.red,
+                        content: Text('$error'),
+                      ),
+                    );
+                  }
+                },
+              );
+            },
           ),
-          onTap: logoutNavLink,
         ),
       ],
     );

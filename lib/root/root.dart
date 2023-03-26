@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sw_planner/features/auth/login/pages/login_page.dart';
 import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sw_planner/root/cubit/root_cubit.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -37,33 +39,29 @@ class MyApp extends StatelessWidget {
         Locale('en', 'US'),
         Locale('pl', 'PL'),
       ],
-      home: LoginPage(),
+      home: const RootPage(),
     );
   }
 }
 
-// class RootPage extends StatelessWidget {
-//   const RootPage({
-//     super.key,
-//   });
+class RootPage extends StatelessWidget {
+  const RootPage({
+    Key? key,
+  }) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold();
-//   }
-// }
-
-// class RootPage extends StatelessWidget {
-//   const RootPage({
-//     super.key,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder(
-//       stream: FirebaseAuth.instance.,
-//       builder: (BuildContext context, snapshot) {
-//         if() {}
-//     },);
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => RootCubit()..start(),
+      child: BlocBuilder<RootCubit, RootState>(
+        builder: (context, state) {
+          final user = state.user;
+          if (user == null) {
+            return LoginPage();
+          }
+          return const TasksPage();
+        },
+      ),
+    );
+  }
+}

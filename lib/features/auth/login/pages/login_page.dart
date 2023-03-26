@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sw_planner/data/repositories/auth_repository.dart';
+import 'package:sw_planner/features/auth/login/cubit/login_cubit.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -15,92 +18,150 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isCreatingAccount = false;
+  bool _isDomainCorrect = false;
+  bool _isPasswordCorrect = false;
+  bool _isPasswordConfirmed = false;
   String _loginMessage = '';
   String _passwordMessage = '';
   String _confirmPasswordMessage = '';
 
   @override
   Widget build(BuildContext context) {
-    return LoginPageBody(
-      appFooter: 'SW Planner\u00A9 2023 | v.1.0.1',
-      loginController: widget.loginController,
-      passwordController: widget.passwordController,
-      confirmPasswordController: widget.confirmPasswordController,
-      isCreatingAccount: _isCreatingAccount,
-      loginMessage: _loginMessage,
-      passwordMessage: _passwordMessage,
-      confirmPasswordMessage: _confirmPasswordMessage,
-      onLoginAndRegisterSwitch: () {
-        if (_isCreatingAccount) {
-          setState(() {
-            _isCreatingAccount = false;
-            widget.loginController.clear();
-            _loginMessage = '';
-            widget.passwordController.clear();
-            _passwordMessage = '';
-            widget.confirmPasswordController.clear();
-            _confirmPasswordMessage = '';
-          });
-        } else {
-          setState(() {
-            _isCreatingAccount = true;
-            widget.loginController.clear();
-            _loginMessage = '';
-            widget.passwordController.clear();
-            _passwordMessage = '';
-            widget.confirmPasswordController.clear();
-            _confirmPasswordMessage = '';
-          });
-        }
-      },
-      onLoginButtonTap: () {
-        if (widget.loginController.text.endsWith('@sw.gov.pl')) {
-          setState(() {
-            _loginMessage = '';
-          });
-        } else if (widget.loginController.text.isEmpty) {
-          setState(() {
-            _loginMessage = 'Wprowadź adres email';
-          });
-        } else {
-          setState(() {
-            _loginMessage = 'Domena @sw.gov.pl jest wymagana';
-          });
-        }
+    return BlocProvider(
+      create: (context) => LoginCubit(AuthRepository()),
+      child: BlocBuilder<LoginCubit, LoginState>(
+        builder: (context, state) {
+          return LoginPageBody(
+            appFooter: 'SW Planner\u00A9 2023 | v.1.0.1',
+            loginController: widget.loginController,
+            passwordController: widget.passwordController,
+            confirmPasswordController: widget.confirmPasswordController,
+            isCreatingAccount: _isCreatingAccount,
+            loginMessage: _loginMessage,
+            passwordMessage: _passwordMessage,
+            confirmPasswordMessage: _confirmPasswordMessage,
+            onLoginAndRegisterSwitch: () {
+              if (_isCreatingAccount) {
+                setState(() {
+                  _isCreatingAccount = false;
+                  widget.loginController.clear();
+                  _loginMessage = '';
+                  widget.passwordController.clear();
+                  _passwordMessage = '';
+                  widget.confirmPasswordController.clear();
+                  _confirmPasswordMessage = '';
+                });
+              } else {
+                setState(() {
+                  _isCreatingAccount = true;
+                  widget.loginController.clear();
+                  _loginMessage = '';
+                  widget.passwordController.clear();
+                  _passwordMessage = '';
+                  widget.confirmPasswordController.clear();
+                  _confirmPasswordMessage = '';
+                });
+              }
+            },
+            onLoginButtonTap: () {
+              if (widget.loginController.text.endsWith('@sw.gov.pl')) {
+                setState(() {
+                  _loginMessage = '';
+                  _isDomainCorrect = true;
+                });
+              } else if (widget.loginController.text.isEmpty) {
+                setState(() {
+                  _loginMessage = 'Wprowadź adres email';
+                  _isDomainCorrect = false;
+                });
+              } else {
+                setState(() {
+                  _loginMessage = 'Domena @sw.gov.pl jest wymagana';
+                  _isDomainCorrect = false;
+                });
+              }
 
-        if (widget.passwordController.text.isNotEmpty) {
-          if (widget.passwordController.text.length < 8) {
-            setState(() {
-              _passwordMessage = 'Hasło musi zawierać conajmniej 8 znaków';
-            });
-          } else {
-            setState(() {
-              _passwordMessage = '';
-            });
-          }
-        } else {
-          setState(() {
-            _passwordMessage = 'Wprowadź hasło';
-          });
-        }
+              if (widget.passwordController.text.isNotEmpty) {
+                if (widget.passwordController.text.length < 8) {
+                  setState(() {
+                    _passwordMessage =
+                        'Hasło musi zawierać conajmniej 8 znaków';
+                    _isPasswordCorrect = false;
+                  });
+                } else {
+                  setState(() {
+                    _passwordMessage = '';
+                    _isPasswordCorrect = true;
+                  });
+                }
+              } else {
+                setState(() {
+                  _passwordMessage = 'Wprowadź hasło';
+                  _isPasswordCorrect = false;
+                });
+              }
 
-        if (widget.confirmPasswordController.text.isNotEmpty) {
-          if (widget.confirmPasswordController.text ==
-              widget.passwordController.text) {
-            setState(() {
-              _confirmPasswordMessage = '';
-            });
-          } else {
-            setState(() {
-              _confirmPasswordMessage = 'Hasła się nie zgadzają';
-            });
-          }
-        } else {
-          setState(() {
-            _confirmPasswordMessage = 'Potwierdź hasło';
-          });
-        }
-      },
+              if (widget.confirmPasswordController.text.isNotEmpty) {
+                if (widget.confirmPasswordController.text ==
+                    widget.passwordController.text) {
+                  setState(() {
+                    _confirmPasswordMessage = '';
+                    _isPasswordConfirmed = true;
+                  });
+                } else {
+                  setState(() {
+                    _confirmPasswordMessage = 'Hasła się nie zgadzają';
+                    _isPasswordConfirmed = false;
+                  });
+                }
+              } else {
+                setState(() {
+                  _confirmPasswordMessage = 'Potwierdź hasło';
+                  _isPasswordConfirmed = false;
+                });
+              }
+
+              if (_isCreatingAccount) {
+                if (_isDomainCorrect &&
+                    _isPasswordCorrect &&
+                    _isPasswordConfirmed) {
+                  try {
+                    context.read<LoginCubit>().register(
+                          email: widget.loginController.text,
+                          password: widget.passwordController.text,
+                        );
+                  } catch (error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        duration: const Duration(seconds: 4),
+                        backgroundColor: Colors.red,
+                        content: Text('$error'),
+                      ),
+                    );
+                  }
+                } else {}
+              } else {
+                if (_isDomainCorrect && _isPasswordCorrect) {
+                  try {
+                    context.read<LoginCubit>().signIn(
+                          email: widget.loginController.text,
+                          password: widget.passwordController.text,
+                        );
+                  } catch (error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        duration: const Duration(seconds: 4),
+                        backgroundColor: Colors.red,
+                        content: Text('$error'),
+                      ),
+                    );
+                  }
+                } else {}
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }
