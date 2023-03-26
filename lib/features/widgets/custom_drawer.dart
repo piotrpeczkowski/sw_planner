@@ -18,7 +18,7 @@ class CustomDrawer extends StatelessWidget {
     return Drawer(
       child: CustomDrawerBody(
         // Profile details
-        userName: 'Andrzej Grabowski',
+        userName: 'Andrzej',
         userEmail: 'andrzej.grabowski@sw.gov.pl',
         userAvatarUrl:
             'https://cdn.galleries.smcloud.net/t/galleries/gf-HHdG-8NLP-4Av5_nie-uwierzycie-co-andrzej-grabowski-wystawil-na-licytacje-wosp-994x828.jpg',
@@ -153,23 +153,31 @@ class CustomDrawerBody extends StatelessWidget {
                           size: 70,
                         ),
                       ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10.0,
-                  ),
-                  child: Text(
-                    userName,
-                    style: GoogleFonts.lato(
-                      color: Colors.white,
-                      fontSize: 18,
+                Visibility(
+                  visible: userName == '' ? false : true,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 10.0,
+                    ),
+                    child: Text(
+                      userName,
+                      style: GoogleFonts.lato(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
-                Text(
-                  userEmail,
-                  style: GoogleFonts.lato(
-                    color: Colors.white,
-                    fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 10.0,
+                  ),
+                  child: Text(
+                    userEmail,
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ],
