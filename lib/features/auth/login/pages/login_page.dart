@@ -69,27 +69,32 @@ class _LoginPageState extends State<LoginPage> {
         }
 
         if (widget.passwordController.text.isNotEmpty) {
-          setState(() {
-            _passwordMessage = '';
-          });
+          if (widget.passwordController.text.length < 8) {
+            setState(() {
+              _passwordMessage = 'Hasło musi zawierać conajmniej 8 znaków';
+            });
+          } else {
+            setState(() {
+              _passwordMessage = '';
+            });
+          }
         } else {
           setState(() {
             _passwordMessage = 'Wprowadź hasło';
           });
         }
 
-        if (widget.confirmPasswordController.text.isNotEmpty &&
-            widget.confirmPasswordController.text ==
-                widget.passwordController.text) {
-          setState(() {
-            _confirmPasswordMessage = '';
-          });
-        } else if (widget.confirmPasswordController.text.isNotEmpty &&
-            widget.confirmPasswordController.text !=
-                widget.passwordController.text) {
-          setState(() {
-            _confirmPasswordMessage = 'Hasła się nie zgadzają';
-          });
+        if (widget.confirmPasswordController.text.isNotEmpty) {
+          if (widget.confirmPasswordController.text ==
+              widget.passwordController.text) {
+            setState(() {
+              _confirmPasswordMessage = '';
+            });
+          } else {
+            setState(() {
+              _confirmPasswordMessage = 'Hasła się nie zgadzają';
+            });
+          }
         } else {
           setState(() {
             _confirmPasswordMessage = 'Potwierdź hasło';
@@ -146,6 +151,18 @@ class LoginPageBody extends StatelessWidget {
         body: Stack(
           alignment: Alignment.topCenter,
           children: [
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.05,
+              right: 15,
+              child: Text(
+                appFooter,
+                style: GoogleFonts.lato(
+                  color: Colors.white.withOpacity(0.3),
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
             ListView(
               padding: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height * 0.20,
@@ -222,6 +239,7 @@ class LoginPageBody extends StatelessWidget {
                     autofillHints: const [AutofillHints.email],
                     minLines: 1,
                     textInputAction: TextInputAction.done,
+                    style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       label: Text(
                         isCreatingAccount ? 'Podaj e-mail' : 'Login (e-mail)',
@@ -266,6 +284,7 @@ class LoginPageBody extends StatelessWidget {
                     obscureText: true,
                     minLines: 1,
                     textInputAction: TextInputAction.done,
+                    style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       label: Text(
                         isCreatingAccount ? 'Ustaw hasło' : 'Hasło',
@@ -312,6 +331,7 @@ class LoginPageBody extends StatelessWidget {
                       obscureText: true,
                       minLines: 1,
                       textInputAction: TextInputAction.done,
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         label: Text(
                           'Potwierdź hasło',
@@ -333,8 +353,9 @@ class LoginPageBody extends StatelessWidget {
                   ),
                 ),
                 Visibility(
-                  visible:
-                      isCreatingAccount && passwordMessage != '' ? true : false,
+                  visible: isCreatingAccount && confirmPasswordMessage != ''
+                      ? true
+                      : false,
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
@@ -395,18 +416,6 @@ class LoginPageBody extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-            Positioned(
-              bottom: MediaQuery.of(context).size.height * 0.02,
-              right: 15,
-              child: Text(
-                appFooter,
-                style: GoogleFonts.lato(
-                  color: Colors.white.withOpacity(0.3),
-                  fontSize: 12,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
             ),
           ],
         ),
