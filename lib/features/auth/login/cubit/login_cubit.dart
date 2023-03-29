@@ -13,20 +13,35 @@ class LoginCubit extends Cubit<LoginState> {
 
   final AuthRepository _authRepository;
 
-  Future<void> register(
-      {required String email, required String password}) async {
-    await _authRepository.register(email, password);
+  Future<void> register({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _authRepository.register(email, password);
+    } catch (error) {
+      throw Exception(error);
+    }
   }
 
-  Future<void> signIn({required String email, required String password}) async {
-    await _authRepository.signIn(email, password);
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _authRepository.signIn(email, password);
+    } catch (error) {
+      throw Exception(error);
+    }
   }
 
-  Future<void> resetPassword({required String email}) async {
+  Future<void> resetPassword({
+    required String email,
+  }) async {
     try {
       await _authRepository.resetPassword(email);
     } catch (error) {
-      throw Exception(error.toString());
+      throw Exception(error);
     }
   }
 

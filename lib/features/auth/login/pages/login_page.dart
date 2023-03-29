@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
               }
             },
             onLoginButtonTap: () {
-              if (widget.loginController.text.endsWith('@sw.gov.pl')) {
+              if (widget.loginController.text.contains('@sw.gov.pl')) {
                 setState(() {
                   _loginMessage = '';
                   _isDomainCorrect = true;
@@ -127,8 +127,8 @@ class _LoginPageState extends State<LoginPage> {
                     _isPasswordConfirmed) {
                   try {
                     context.read<LoginCubit>().register(
-                          email: widget.loginController.text,
-                          password: widget.passwordController.text,
+                          email: widget.loginController.text.trim(),
+                          password: widget.passwordController.text.trim(),
                         );
                   } catch (error) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -139,13 +139,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   }
-                } else {}
+                }
               } else {
                 if (_isDomainCorrect && _isPasswordCorrect) {
                   try {
                     context.read<LoginCubit>().signIn(
-                          email: widget.loginController.text,
-                          password: widget.passwordController.text,
+                          email: widget.loginController.text.trim(),
+                          password: widget.passwordController.text.trim(),
                         );
                   } catch (error) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   }
-                } else {}
+                }
               }
             },
           );

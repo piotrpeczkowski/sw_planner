@@ -56,17 +56,16 @@ class CustomDrawer extends StatelessWidget {
             ),
           );
         },
-        // Settings navigator
         settingsNavIcon: const Icon(Icons.settings),
         settingsNavTitle: 'Ustawienia',
         settingsNavLink: () {},
-        // Logout navigator
         logoutNavIcon: const Icon(
           Icons.logout,
           color: Colors.red,
         ),
         logoutNavTitle: 'Wyloguj',
-        logoutNavLink: () {},
+        logoutNavLink:
+            () {}, //signOut implemented directly in CustomDrawerBody class
       ),
     );
   }
