@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sw_planner/core/enums.dart';
+import 'package:sw_planner/data/repositories/user_repository.dart';
+import 'package:sw_planner/features/user_profile/cubit/profile_cubit.dart';
 
 class UserProfilePage extends StatelessWidget {
   UserProfilePage({super.key});
@@ -8,15 +12,74 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UserProfilePageBody(
-      userName: 'Andrzej Grabowski',
-      userEmail: 'andrzej.grabowski@sw.gov.pl',
-      userAvatarUrl:
-          'https://cdn.galleries.smcloud.net/t/galleries/gf-HHdG-8NLP-4Av5_nie-uwierzycie-co-andrzej-grabowski-wystawil-na-licytacje-wosp-994x828.jpg',
-      userNameController: _userNameController,
-      onSave: () {
-        Navigator.of(context).pop();
-      },
+    return BlocProvider(
+      create: (context) => ProfileCubit(UserRepository())..start(),
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          final userModel = state.userModel;
+          if (userModel == null) {
+            return const ProgressIndicatorPage();
+          }
+          _userNameController.text = state.userModel!.userName;
+          switch (state.status) {
+            case Status.initial:
+              return UserProfilePageBody(
+                userName: 'Szukam',
+                userEmail: '',
+                userAvatarUrl: '',
+                userNameController: _userNameController,
+                isPageContentVisible: false,
+                onSave: null,
+              );
+            case Status.loading:
+              return UserProfilePageBody(
+                userName: 'Trwa wczytywanie',
+                userEmail: '',
+                userAvatarUrl: '',
+                userNameController: _userNameController,
+                isPageContentVisible: false,
+                onSave: null,
+              );
+            case Status.success:
+              return UserProfilePageBody(
+                  userName: userModel.userName,
+                  userEmail: userModel.userEmail,
+                  userAvatarUrl: userModel.userAvatarUrl,
+                  userNameController: _userNameController,
+                  isPageContentVisible: true,
+                  onSave: () {
+                    Navigator.of(context).pop();
+                  });
+            case Status.error:
+              return UserProfilePageBody(
+                userName: 'Wystąpił błąd',
+                userEmail: state.errorMessage,
+                userAvatarUrl: '',
+                userNameController: _userNameController,
+                isPageContentVisible: false,
+                onSave: null,
+              );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class ProgressIndicatorPage extends StatelessWidget {
+  const ProgressIndicatorPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Profil użytkownika', style: GoogleFonts.kanit()),
+      ),
+      body: const Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }
@@ -28,6 +91,7 @@ class UserProfilePageBody extends StatelessWidget {
     required this.userEmail,
     required this.userAvatarUrl,
     required this.userNameController,
+    required this.isPageContentVisible,
     required this.onSave,
   });
 
@@ -35,7 +99,8 @@ class UserProfilePageBody extends StatelessWidget {
   final String userEmail;
   final String userAvatarUrl;
   final TextEditingController userNameController;
-  final Function() onSave;
+  final bool isPageContentVisible;
+  final Function()? onSave;
 
   @override
   Widget build(BuildContext context) {
@@ -93,11 +158,18 @@ class UserProfilePageBody extends StatelessWidget {
                         ],
                       )
                     : Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
                         children: [
-                          const CircleAvatar(
-                            radius: 60,
-                            child: FlutterLogo(
-                              size: 70,
+                          const ClipOval(
+                            child: CircleAvatar(
+                              radius: 60,
+                              child: Opacity(
+                                opacity: 0.6,
+                                child: Image(
+                                  height: 110,
+                                  image: AssetImage('images/def_avatar.png'),
+                                ),
+                              ),
                             ),
                           ),
                           InkWell(
@@ -146,33 +218,35 @@ class UserProfilePageBody extends StatelessWidget {
               color: Colors.red,
             ),
           ),
-          ListView(
-            padding: const EdgeInsets.all(15),
-            shrinkWrap: true,
-            //physics: NeverScrollableScrollPhysics(),
-            children: [
-              TextField(
-                controller: userNameController,
-                maxLines: 1,
-                maxLength: 25,
-                textInputAction: TextInputAction.done,
-                decoration: InputDecoration(
-                  label: Text(
-                    'Nazwa użytkownika',
-                    style: GoogleFonts.lato(),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      width: 1,
-                      color: Color.fromARGB(255, 13, 71, 161),
+          Visibility(
+            visible: isPageContentVisible,
+            child: ListView(
+              padding: const EdgeInsets.all(15),
+              shrinkWrap: true,
+              children: [
+                TextField(
+                  controller: userNameController,
+                  maxLines: 1,
+                  maxLength: 25,
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(
+                    label: Text(
+                      'Nazwa użytkownika',
+                      style: GoogleFonts.lato(),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color.fromARGB(255, 13, 71, 161),
+                      ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
