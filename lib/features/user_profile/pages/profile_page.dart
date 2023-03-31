@@ -184,23 +184,27 @@ class UserProfilePageBody extends StatelessWidget {
                           ),
                         ],
                       ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10.0,
-                  ),
-                  child: Text(
-                    userName,
-                    style: GoogleFonts.lato(
-                      color: Colors.white,
-                      fontSize: 18,
+                Visibility(
+                  visible: userName == '' ? false : true,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      userName,
+                      style: GoogleFonts.lato(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
-                Text(
-                  userEmail,
-                  style: GoogleFonts.lato(
-                    color: Colors.white,
-                    fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    userEmail,
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ],
