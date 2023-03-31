@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/auth_repository.dart';
 import 'package:sw_planner/features/auth/login/cubit/login_cubit.dart';
 import 'package:sw_planner/features/calendar_page/pages/calendar_page.dart';
 import 'package:sw_planner/features/notes_page/pages/notes.dart';
 import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
+import 'package:sw_planner/features/user_profile/cubit/profile_cubit.dart';
 import 'package:sw_planner/features/user_profile/pages/profile_page.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -15,58 +17,53 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: CustomDrawerBody(
-        // Profile details
-        userName: 'Andrzej',
-        userEmail: 'andrzej.grabowski@sw.gov.pl',
-        userAvatarUrl:
-            'https://cdn.galleries.smcloud.net/t/galleries/gf-HHdG-8NLP-4Av5_nie-uwierzycie-co-andrzej-grabowski-wystawil-na-licytacje-wosp-994x828.jpg',
-        userProfileNavLink: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => UserProfilePage(),
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        final userModel = state.userModel;
+        if (userModel == null) {
+          return const Drawer(
+            child: CustomDrawerBody(
+              userName: '',
+              userEmail: '',
+              userAvatarUrl: '',
             ),
           );
-        },
-        firstNavIcon: const Icon(Icons.task_alt),
-        firstNavTitle: 'Zadania',
-        firstNavLink: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => const TasksPage(),
-            ),
-          );
-        },
-        secondNavIcon: const Icon(Icons.notes_outlined),
-        secondNavTitle: 'Notatki',
-        secondNavLink: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => const NotesPage(),
-            ),
-          );
-        },
-        thirdNavIcon: const Icon(Icons.calendar_month),
-        thirdNavTitle: 'Kalendarz',
-        thirdNavLink: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => CalendarPage(),
-            ),
-          );
-        },
-        settingsNavIcon: const Icon(Icons.settings),
-        settingsNavTitle: 'Ustawienia',
-        settingsNavLink: () {},
-        logoutNavIcon: const Icon(
-          Icons.logout,
-          color: Colors.red,
-        ),
-        logoutNavTitle: 'Wyloguj',
-        logoutNavLink:
-            () {}, //signOut implemented directly in CustomDrawerBody class
-      ),
+        }
+        switch (state.status) {
+          case Status.initial:
+            return const Drawer(
+              child: CustomDrawerBody(
+                userName: '',
+                userEmail: 'Wczytywanie...',
+                userAvatarUrl: '',
+              ),
+            );
+          case Status.loading:
+            return Drawer(
+              child: CustomDrawerBody(
+                userName: '',
+                userEmail: 'Wczytywanie...',
+                userAvatarUrl: userModel.userAvatarUrl,
+              ),
+            );
+          case Status.success:
+            return Drawer(
+              child: CustomDrawerBody(
+                userName: userModel.userName,
+                userEmail: userModel.userEmail,
+                userAvatarUrl: userModel.userAvatarUrl,
+              ),
+            );
+          case Status.error:
+            return const Drawer(
+              child: CustomDrawerBody(
+                userName: '',
+                userEmail: 'Wystąpił błąd',
+                userAvatarUrl: '',
+              ),
+            );
+        }
+      },
     );
   }
 }
@@ -76,44 +73,12 @@ class CustomDrawerBody extends StatelessWidget {
     required this.userName,
     required this.userEmail,
     required this.userAvatarUrl,
-    required this.userProfileNavLink,
-    required this.firstNavIcon,
-    required this.firstNavTitle,
-    required this.firstNavLink,
-    required this.secondNavIcon,
-    required this.secondNavTitle,
-    required this.secondNavLink,
-    required this.thirdNavIcon,
-    required this.thirdNavTitle,
-    required this.thirdNavLink,
-    required this.settingsNavIcon,
-    required this.settingsNavTitle,
-    required this.settingsNavLink,
-    required this.logoutNavIcon,
-    required this.logoutNavTitle,
-    required this.logoutNavLink,
     super.key,
   });
 
   final String userName;
   final String userEmail;
   final String userAvatarUrl;
-  final Function() userProfileNavLink;
-  final Icon firstNavIcon;
-  final String firstNavTitle;
-  final Function() firstNavLink;
-  final Icon secondNavIcon;
-  final String secondNavTitle;
-  final Function() secondNavLink;
-  final Icon thirdNavIcon;
-  final String thirdNavTitle;
-  final Function() thirdNavLink;
-  final Icon settingsNavIcon;
-  final String settingsNavTitle;
-  final Function() settingsNavLink;
-  final Icon logoutNavIcon;
-  final String logoutNavTitle;
-  final Function() logoutNavLink;
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +103,13 @@ class CustomDrawerBody extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            onTap: userProfileNavLink,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => UserProfilePage(),
+                ),
+              );
+            },
             child: Column(
               children: [
                 userAvatarUrl != ''
@@ -146,10 +117,16 @@ class CustomDrawerBody extends StatelessWidget {
                         radius: 60,
                         backgroundImage: NetworkImage(userAvatarUrl),
                       )
-                    : const CircleAvatar(
-                        radius: 60,
-                        child: FlutterLogo(
-                          size: 70,
+                    : const ClipOval(
+                        child: CircleAvatar(
+                          radius: 60,
+                          child: Opacity(
+                            opacity: 0.6,
+                            child: Image(
+                              height: 110,
+                              image: AssetImage('images/def_avatar.png'),
+                            ),
+                          ),
                         ),
                       ),
                 Visibility(
@@ -197,35 +174,55 @@ class CustomDrawerBody extends StatelessWidget {
         ),
         const Padding(padding: EdgeInsets.only(bottom: 10)),
         ListTile(
-            leading: firstNavIcon,
-            title: Text(
-              firstNavTitle,
-              style: GoogleFonts.lato(fontSize: 16),
-            ),
-            onTap: firstNavLink),
-        ListTile(
-            leading: secondNavIcon,
-            title: Text(
-              secondNavTitle,
-              style: GoogleFonts.lato(fontSize: 16),
-            ),
-            onTap: secondNavLink),
-        ListTile(
-          leading: thirdNavIcon,
+          leading: const Icon(Icons.task_alt),
           title: Text(
-            thirdNavTitle,
+            'Zadania',
             style: GoogleFonts.lato(fontSize: 16),
           ),
-          onTap: thirdNavLink,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const TasksPage(),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.notes_outlined),
+          title: Text(
+            'Notatki',
+            style: GoogleFonts.lato(fontSize: 16),
+          ),
+          onTap: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const NotesPage(),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.calendar_month),
+          title: Text(
+            'Kalendarz',
+            style: GoogleFonts.lato(fontSize: 16),
+          ),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => CalendarPage(),
+              ),
+            );
+          },
         ),
         const Divider(),
         ListTile(
-          leading: settingsNavIcon,
+          leading: const Icon(Icons.settings),
           title: Text(
-            settingsNavTitle,
+            'Ustawienia',
             style: GoogleFonts.lato(fontSize: 16),
           ),
-          onTap: settingsNavLink,
+          onTap: () {},
         ),
         const Divider(),
         BlocProvider(
@@ -233,9 +230,12 @@ class CustomDrawerBody extends StatelessWidget {
           child: BlocBuilder<LoginCubit, LoginState>(
             builder: (context, state) {
               return ListTile(
-                leading: logoutNavIcon,
+                leading: const Icon(
+                  Icons.logout,
+                  color: Colors.red,
+                ),
                 title: Text(
-                  logoutNavTitle,
+                  'Wyloguj',
                   style: GoogleFonts.lato(fontSize: 16),
                 ),
                 onTap: () {
