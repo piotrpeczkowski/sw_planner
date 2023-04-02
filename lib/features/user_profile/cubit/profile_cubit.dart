@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/user_repository.dart';
@@ -50,6 +52,35 @@ class ProfileCubit extends Cubit<ProfileState> {
               ),
             );
           });
+  }
+
+  Future<void> updateUserProfile(
+    String userName,
+    DateTime updateDate,
+  ) async {
+    try {
+      await _userRepository.updateUserProfile(userName, updateDate);
+    } catch (error) {
+      emit(ProfileState(
+        status: Status.error,
+        errorMessage: error.toString(),
+      ));
+    }
+  }
+
+  Future<void> pickAndUploadAvatar(
+    String avatarUrl,
+    ImageSource source,
+  ) async {
+    try {
+      await _userRepository.pickAndUploadImage(avatarUrl, source);
+    } catch (error) {
+      emit(ProfileState(
+        status: Status.error,
+        errorMessage: error.toString(),
+      ));
+      //print(error);
+    }
   }
 
   @override

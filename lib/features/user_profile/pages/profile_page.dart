@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/user_repository.dart';
 import 'package:sw_planner/features/user_profile/cubit/profile_cubit.dart';
+import 'package:sw_planner/features/user_profile/widgets/camera_simple_dialog.dart';
 
 class UserProfilePage extends StatelessWidget {
   UserProfilePage({super.key});
@@ -12,6 +14,7 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String avatarUrl = '';
     return BlocProvider(
       create: (context) => ProfileCubit(UserRepository())..start(),
       child: BlocBuilder<ProfileCubit, ProfileState>(
@@ -30,6 +33,8 @@ class UserProfilePage extends StatelessWidget {
                 userNameController: _userNameController,
                 isPageContentVisible: false,
                 onSave: null,
+                openCamera: () {},
+                openGallery: () {},
               );
             case Status.loading:
               return UserProfilePageBody(
@@ -39,17 +44,40 @@ class UserProfilePage extends StatelessWidget {
                 userNameController: _userNameController,
                 isPageContentVisible: false,
                 onSave: null,
+                openCamera: () {},
+                openGallery: () {},
               );
             case Status.success:
               return UserProfilePageBody(
-                  userName: userModel.userName,
-                  userEmail: userModel.userEmail,
-                  userAvatarUrl: userModel.userAvatarUrl,
-                  userNameController: _userNameController,
-                  isPageContentVisible: true,
-                  onSave: () {
+                userName: userModel.userName,
+                userEmail: userModel.userEmail,
+                userAvatarUrl: userModel.userAvatarUrl,
+                userNameController: _userNameController,
+                isPageContentVisible: true,
+                onSave: () {
+                  try {
+                    context.read<ProfileCubit>().updateUserProfile(
+                          _userNameController.text,
+                          DateTime.now(),
+                        );
                     Navigator.of(context).pop();
-                  });
+                  } catch (error) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                openCamera: () {
+                  context.read<ProfileCubit>().pickAndUploadAvatar(
+                        avatarUrl,
+                        ImageSource.camera,
+                      );
+                },
+                openGallery: () {
+                  context.read<ProfileCubit>().pickAndUploadAvatar(
+                        avatarUrl,
+                        ImageSource.gallery,
+                      );
+                },
+              );
             case Status.error:
               return UserProfilePageBody(
                 userName: 'Wystąpił błąd',
@@ -58,6 +86,8 @@ class UserProfilePage extends StatelessWidget {
                 userNameController: _userNameController,
                 isPageContentVisible: false,
                 onSave: null,
+                openCamera: () {},
+                openGallery: () {},
               );
           }
         },
@@ -93,6 +123,8 @@ class UserProfilePageBody extends StatelessWidget {
     required this.userNameController,
     required this.isPageContentVisible,
     required this.onSave,
+    required this.openCamera,
+    required this.openGallery,
   });
 
   final String userName;
@@ -101,6 +133,8 @@ class UserProfilePageBody extends StatelessWidget {
   final TextEditingController userNameController;
   final bool isPageContentVisible;
   final Function()? onSave;
+  final Function() openCamera;
+  final Function() openGallery;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +180,13 @@ class UserProfilePageBody extends StatelessWidget {
                             backgroundImage: NetworkImage(userAvatarUrl),
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              avatarSourceDialog(
+                                context,
+                                openCamera,
+                                openGallery,
+                              );
+                            },
                             child: CircleAvatar(
                               backgroundColor: Colors.white.withOpacity(0.85),
                               child: const Icon(
@@ -173,7 +213,13 @@ class UserProfilePageBody extends StatelessWidget {
                             ),
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              avatarSourceDialog(
+                                context,
+                                openCamera,
+                                openGallery,
+                              );
+                            },
                             child: CircleAvatar(
                               backgroundColor: Colors.white.withOpacity(0.85),
                               child: const Icon(

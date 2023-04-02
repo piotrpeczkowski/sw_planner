@@ -3,9 +3,9 @@ part of 'profile_cubit.dart';
 @immutable
 class ProfileState {
   const ProfileState({
-    required this.userModel,
+    this.userModel,
     required this.status,
-    required this.errorMessage,
+    this.errorMessage = '',
   });
 
   final UserModel? userModel;

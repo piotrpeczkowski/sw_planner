@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sw_planner/domain/models/user_model.dart';
 
 class UserRepository {
@@ -45,5 +49,68 @@ class UserRepository {
         isFirstLogin: doc['first_login'],
       );
     });
+  }
+
+  Future<void> updateUserProfile(
+    String userName,
+    DateTime updateDate,
+  ) async {
+    final userID = FirebaseAuth.instance.currentUser?.uid;
+    if (userID == null) {
+      throw Exception('User is not logged in');
+    }
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('user_profile')
+        .doc('user_profile')
+        .set(
+      {
+        'name': userName,
+        'last_update': updateDate,
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  Future<void> pickAndUploadImage(
+    String avatarUrl,
+    ImageSource source,
+  ) async {
+    final firebaseStorageReference = FirebaseStorage.instance.ref();
+    final userID = FirebaseAuth.instance.currentUser!.uid;
+
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(
+      source: source,
+      maxHeight: 350,
+      maxWidth: 250,
+    );
+
+    if (file == null) return;
+
+    Reference referenceRoot = firebaseStorageReference;
+    Reference referenceDirImages = referenceRoot.child(userID);
+    Reference referenceImageToUpload =
+        referenceDirImages.child('avatar_$userID');
+
+    try {
+      await referenceImageToUpload.putFile(File(file.path));
+      avatarUrl = await referenceImageToUpload.getDownloadURL();
+    } catch (error) {
+      throw Exception(error);
+    }
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('user_profile')
+        .doc('user_profile')
+        .set(
+      {
+        'avatar_url': avatarUrl,
+      },
+      SetOptions(merge: true),
+    );
   }
 }
