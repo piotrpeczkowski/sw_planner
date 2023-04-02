@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/auth_repository.dart';
+import 'package:sw_planner/data/repositories/user_repository.dart';
 import 'package:sw_planner/features/auth/login/cubit/login_cubit.dart';
 import 'package:sw_planner/features/calendar_page/pages/calendar_page.dart';
 import 'package:sw_planner/features/notes_page/pages/notes.dart';
 import 'package:sw_planner/features/tasks_page/pages/tasks.dart';
 import 'package:sw_planner/features/user_profile/cubit/profile_cubit.dart';
-import 'package:sw_planner/features/user_profile/pages/profile_page.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -17,53 +17,56 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-        final userModel = state.userModel;
-        if (userModel == null) {
-          return const Drawer(
-            child: CustomDrawerBody(
-              userName: '',
-              userEmail: '',
-              userAvatarUrl: '',
-            ),
-          );
-        }
-        switch (state.status) {
-          case Status.initial:
+    return BlocProvider(
+      create: (context) => ProfileCubit(UserRepository())..start(),
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          final userModel = state.userModel;
+          if (userModel == null) {
             return const Drawer(
               child: CustomDrawerBody(
                 userName: '',
-                userEmail: 'Wczytywanie...',
+                userEmail: '',
                 userAvatarUrl: '',
               ),
             );
-          case Status.loading:
-            return Drawer(
-              child: CustomDrawerBody(
-                userName: '',
-                userEmail: 'Wczytywanie...',
-                userAvatarUrl: userModel.userAvatarUrl,
-              ),
-            );
-          case Status.success:
-            return Drawer(
-              child: CustomDrawerBody(
-                userName: userModel.userName,
-                userEmail: userModel.userEmail,
-                userAvatarUrl: userModel.userAvatarUrl,
-              ),
-            );
-          case Status.error:
-            return const Drawer(
-              child: CustomDrawerBody(
-                userName: '',
-                userEmail: 'Wystąpił błąd',
-                userAvatarUrl: '',
-              ),
-            );
-        }
-      },
+          }
+          switch (state.status) {
+            case Status.initial:
+              return const Drawer(
+                child: CustomDrawerBody(
+                  userName: '',
+                  userEmail: 'Wczytywanie...',
+                  userAvatarUrl: '',
+                ),
+              );
+            case Status.loading:
+              return Drawer(
+                child: CustomDrawerBody(
+                  userName: '',
+                  userEmail: 'Wczytywanie...',
+                  userAvatarUrl: userModel.userAvatarUrl,
+                ),
+              );
+            case Status.success:
+              return Drawer(
+                child: CustomDrawerBody(
+                  userName: userModel.userName,
+                  userEmail: userModel.userEmail,
+                  userAvatarUrl: userModel.userAvatarUrl,
+                ),
+              );
+            case Status.error:
+              return const Drawer(
+                child: CustomDrawerBody(
+                  userName: '',
+                  userEmail: 'Wystąpił błąd',
+                  userAvatarUrl: '',
+                ),
+              );
+          }
+        },
+      ),
     );
   }
 }
@@ -104,11 +107,11 @@ class CustomDrawerBody extends StatelessWidget {
           ),
           child: InkWell(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => UserProfilePage(),
-                ),
-              );
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => UserProfilePage(),
+              //   ),
+              // );
             },
             child: Column(
               children: [
