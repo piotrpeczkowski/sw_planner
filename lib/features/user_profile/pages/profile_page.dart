@@ -5,7 +5,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/user_repository.dart';
 import 'package:sw_planner/features/user_profile/cubit/profile_cubit.dart';
-import 'package:sw_planner/features/user_profile/widgets/camera_simple_dialog.dart';
+import 'package:sw_planner/features/user_profile/pages/progress_indicator_page.dart';
+import 'package:sw_planner/features/user_profile/widgets/profile_body_widget.dart';
+import 'package:sw_planner/features/user_profile/widgets/profile_header_widget.dart';
+import 'package:sw_planner/features/widgets/flag_separator_widget.dart';
 
 class UserProfilePage extends StatelessWidget {
   UserProfilePage({super.key});
@@ -100,24 +103,6 @@ class UserProfilePage extends StatelessWidget {
   }
 }
 
-class ProgressIndicatorPage extends StatelessWidget {
-  const ProgressIndicatorPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Profil użytkownika', style: GoogleFonts.kanit()),
-      ),
-      body: const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-}
-
 class UserProfilePageBody extends StatelessWidget {
   const UserProfilePageBody({
     super.key,
@@ -157,179 +142,18 @@ class UserProfilePageBody extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.only(
-              top: 30,
-              bottom: 20,
-              left: 20,
-              right: 20,
-            ),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-                colors: [
-                  Color.fromARGB(255, 13, 71, 161),
-                  Color.fromARGB(255, 84, 152, 255)
-                ],
-              ),
-            ),
-            child: Column(
-              children: [
-                userAvatarUrl != ''
-                    ? Stack(
-                        alignment: AlignmentDirectional.bottomEnd,
-                        children: [
-                          CircleAvatar(
-                            radius: 60,
-                            backgroundImage: NetworkImage(userAvatarUrl),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              avatarSourceDialog(
-                                context,
-                                openCamera,
-                                openGallery,
-                              );
-                            },
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white.withOpacity(0.85),
-                              child: const Icon(
-                                Icons.add_a_photo,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Stack(
-                        alignment: AlignmentDirectional.bottomEnd,
-                        children: [
-                          const ClipOval(
-                            child: CircleAvatar(
-                              radius: 60,
-                              child: Opacity(
-                                opacity: 0.6,
-                                child: Image(
-                                  height: 110,
-                                  image: AssetImage('images/def_avatar.png'),
-                                ),
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              avatarSourceDialog(
-                                context,
-                                openCamera,
-                                openGallery,
-                              );
-                            },
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white.withOpacity(0.85),
-                              child: const Icon(
-                                Icons.add_a_photo,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                Visibility(
-                  visible: userName == '' ? false : true,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      userName,
-                      style: GoogleFonts.lato(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    userEmail,
-                    style: GoogleFonts.lato(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          ProfileHeaderWidget(
+            userAvatarUrl: userAvatarUrl,
+            openCamera: openCamera,
+            openGallery: openGallery,
+            userName: userName,
+            userEmail: userEmail,
           ),
-          Container(
-            height: 3,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-            ),
-          ),
-          Container(
-            height: 3,
-            decoration: const BoxDecoration(
-              color: Colors.red,
-            ),
-          ),
-          Visibility(
-            visible: isPageContentVisible,
-            child: ListView(
-              padding: const EdgeInsets.all(15),
-              shrinkWrap: true,
-              children: [
-                TextField(
-                  controller: userNameController,
-                  maxLines: 1,
-                  maxLength: 25,
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Nazwa użytkownika',
-                      style: GoogleFonts.lato(),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color.fromARGB(255, 13, 71, 161),
-                      ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 15.0),
-                  child: Divider(),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'Ostatnio zaktualizowano:',
-                    style: GoogleFonts.lato(
-                      color: Colors.black45,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      lastProfileUpdate,
-                      style: GoogleFonts.lato(
-                        color: Colors.black45,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          const FlagSeparatorWidget(),
+          ProfileBodyWidget(
+            isPageContentVisible: isPageContentVisible,
+            userNameController: userNameController,
+            lastProfileUpdate: lastProfileUpdate,
           ),
         ],
       ),
