@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:sw_planner/root/root.dart';
+import 'package:sw_planner/app/app.dart';
 
 import 'firebase_options.dart';
 
