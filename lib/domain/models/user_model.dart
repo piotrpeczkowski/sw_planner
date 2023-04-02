@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class UserModel {
   const UserModel({
     required this.userEmail,
@@ -11,4 +13,8 @@ class UserModel {
   final String userAvatarUrl;
   final DateTime lastProfileUpdate;
   final bool isFirstLogin;
+
+  String lastProfileUpdateFormatted() {
+    return DateFormat.yMMMMd('pl_PL').add_Hm().format(lastProfileUpdate);
+  }
 }
