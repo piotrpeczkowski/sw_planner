@@ -30,6 +30,7 @@ class UserProfilePage extends StatelessWidget {
                 userName: 'Szukam',
                 userEmail: '',
                 userAvatarUrl: '',
+                lastProfileUpdate: DateTime.now(),
                 userNameController: _userNameController,
                 isPageContentVisible: false,
                 onSave: null,
@@ -41,6 +42,7 @@ class UserProfilePage extends StatelessWidget {
                 userName: 'Trwa wczytywanie',
                 userEmail: '',
                 userAvatarUrl: '',
+                lastProfileUpdate: DateTime.now(),
                 userNameController: _userNameController,
                 isPageContentVisible: false,
                 onSave: null,
@@ -52,6 +54,7 @@ class UserProfilePage extends StatelessWidget {
                 userName: userModel.userName,
                 userEmail: userModel.userEmail,
                 userAvatarUrl: userModel.userAvatarUrl,
+                lastProfileUpdate: userModel.lastProfileUpdateFormatted(),
                 userNameController: _userNameController,
                 isPageContentVisible: true,
                 onSave: () {
@@ -83,6 +86,7 @@ class UserProfilePage extends StatelessWidget {
                 userName: '',
                 userEmail: '',
                 userAvatarUrl: '',
+                lastProfileUpdate: DateTime.now(),
                 userNameController: _userNameController,
                 isPageContentVisible: false,
                 onSave: null,
@@ -120,6 +124,7 @@ class UserProfilePageBody extends StatelessWidget {
     required this.userName,
     required this.userEmail,
     required this.userAvatarUrl,
+    required this.lastProfileUpdate,
     required this.userNameController,
     required this.isPageContentVisible,
     required this.onSave,
@@ -130,6 +135,7 @@ class UserProfilePageBody extends StatelessWidget {
   final String userName;
   final String userEmail;
   final String userAvatarUrl;
+  final dynamic lastProfileUpdate;
   final TextEditingController userNameController;
   final bool isPageContentVisible;
   final Function()? onSave;
@@ -292,6 +298,33 @@ class UserProfilePageBody extends StatelessWidget {
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 15.0),
+                  child: Divider(),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'Ostatnio zaktualizowano:',
+                    style: GoogleFonts.lato(
+                      color: Colors.black45,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      lastProfileUpdate,
+                      style: GoogleFonts.lato(
+                        color: Colors.black45,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
