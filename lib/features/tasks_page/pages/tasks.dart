@@ -6,7 +6,7 @@ import 'package:sw_planner/features/add_task/pages/add_task.dart';
 import 'package:sw_planner/features/tasks_page/content/current_tasks/current_tasks_content.dart';
 import 'package:sw_planner/features/tasks_page/content/ended_tasks/ended_tasks_content.dart';
 import 'package:sw_planner/features/user_profile/cubit/profile_cubit.dart';
-import 'package:sw_planner/features/widgets/custom_drawer.dart';
+import 'package:sw_planner/features/custom_drawer/custom_drawer.dart';
 
 class TasksPage extends StatefulWidget {
   const TasksPage({

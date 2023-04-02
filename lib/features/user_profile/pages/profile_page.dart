@@ -80,8 +80,8 @@ class UserProfilePage extends StatelessWidget {
               );
             case Status.error:
               return UserProfilePageBody(
-                userName: 'Wystąpił błąd',
-                userEmail: state.errorMessage,
+                userName: '',
+                userEmail: '',
                 userAvatarUrl: '',
                 userNameController: _userNameController,
                 isPageContentVisible: false,

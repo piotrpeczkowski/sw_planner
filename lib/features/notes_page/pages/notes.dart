@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sw_planner/features/add_note/pages/add_note.dart';
 import 'package:sw_planner/features/notes_page/widgets/note_widget.dart';
-import 'package:sw_planner/features/widgets/custom_drawer.dart';
+import 'package:sw_planner/features/custom_drawer/custom_drawer.dart';
 
 class NotesPage extends StatelessWidget {
   const NotesPage({
