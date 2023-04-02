@@ -7,7 +7,7 @@ import 'package:sw_planner/data/repositories/user_repository.dart';
 import 'package:sw_planner/features/auth/login/cubit/login_cubit.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/calendar_widget.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/drawer_header_widget.dart';
-import 'package:sw_planner/features/custom_drawer/widgets/flag_separator_widget.dart';
+import 'package:sw_planner/features/widgets/flag_separator_widget.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/notes_widget.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/settings_widget.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/tasks_widget.dart';
