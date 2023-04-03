@@ -16,7 +16,6 @@ class ProfileCubit extends Cubit<ProfileState> {
           const ProfileState(
             userModel: null,
             status: Status.initial,
-            errorMessage: '',
           ),
         );
 
@@ -29,7 +28,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       const ProfileState(
         userModel: null,
         status: Status.loading,
-        errorMessage: '',
       ),
     );
 
@@ -39,7 +37,6 @@ class ProfileCubit extends Cubit<ProfileState> {
         ProfileState(
           userModel: userModel,
           status: Status.success,
-          errorMessage: '',
         ),
       );
     })
@@ -79,7 +76,6 @@ class ProfileCubit extends Cubit<ProfileState> {
         status: Status.error,
         errorMessage: error.toString(),
       ));
-      //print(error);
     }
   }
 
