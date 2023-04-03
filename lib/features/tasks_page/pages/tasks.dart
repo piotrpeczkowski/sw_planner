@@ -5,6 +5,8 @@ import 'package:sw_planner/data/repositories/user_repository.dart';
 import 'package:sw_planner/features/add_task/pages/add_task.dart';
 import 'package:sw_planner/features/tasks_page/content/current_tasks/current_tasks_content.dart';
 import 'package:sw_planner/features/tasks_page/content/ended_tasks/ended_tasks_content.dart';
+import 'package:sw_planner/features/tasks_page/widgets/add_task_button_widget.dart';
+import 'package:sw_planner/features/tasks_page/widgets/task_bottom_nav_bar_widget.dart';
 import 'package:sw_planner/features/user_profile/cubit/profile_cubit.dart';
 import 'package:sw_planner/features/custom_drawer/custom_drawer.dart';
 
@@ -59,57 +61,6 @@ class _TasksPageState extends State<TasksPage> {
           },
         ),
       ),
-    );
-  }
-}
-
-class AddTaskButton extends StatelessWidget {
-  const AddTaskButton({
-    required this.onPressed,
-    super.key,
-  });
-
-  final Function() onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: onPressed,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
-      ),
-      child: const Icon(Icons.add),
-    );
-  }
-}
-
-class TaskBottomNavBar extends StatelessWidget {
-  const TaskBottomNavBar({
-    required this.currentIndex,
-    required this.onTap,
-    super.key,
-  });
-
-  final int currentIndex;
-  final Function(int) onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: currentIndex,
-      onTap: onTap,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.list_alt),
-          label: 'Bieżące',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.done),
-          label: 'Zakończone',
-        ),
-      ],
     );
   }
 }
