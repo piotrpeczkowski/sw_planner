@@ -106,7 +106,7 @@ class TaskBottomNavBar extends StatelessWidget {
           label: 'Bieżące',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.done_all),
+          icon: Icon(Icons.done),
           label: 'Zakończone',
         ),
       ],
