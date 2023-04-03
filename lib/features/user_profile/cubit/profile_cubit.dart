@@ -65,6 +65,16 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> updatePassword({
+    required String password,
+  }) async {
+    try {
+      await _userRepository.updatePassword(password);
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
   Future<void> pickAndUploadAvatar(
     String avatarUrl,
     ImageSource source,
