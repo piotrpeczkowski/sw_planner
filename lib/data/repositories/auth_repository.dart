@@ -21,6 +21,17 @@ class AuthRepository {
     );
   }
 
+  Future<void> updatePassword(
+    String password,
+  ) async {
+    final userID = FirebaseAuth.instance.currentUser?.uid;
+    if (userID == null) {
+      return;
+    } else {
+      await FirebaseAuth.instance.currentUser!.updatePassword(password);
+    }
+  }
+
   Future<void> resetPassword(
     String email,
   ) async {
