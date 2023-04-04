@@ -130,6 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                           email: widget.loginController.text.trim(),
                           password: widget.passwordController.text.trim(),
                         );
+                    context.read<LoginCubit>().createUserProfile();
                   } catch (error) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

@@ -24,6 +24,14 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
+  Future<void> createUserProfile() async {
+    try {
+      await _authRepository.createUserInfo();
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
   Future<void> signIn({
     required String email,
     required String password,

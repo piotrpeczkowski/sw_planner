@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepository {
@@ -8,6 +9,31 @@ class AuthRepository {
     await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: email,
       password: password,
+    );
+  }
+
+  Future<void> createUserInfo() async {
+    FirebaseAuth.instance.authStateChanges().listen(
+      (User? user) {
+        if (user != null) {
+          String userID = user.uid;
+          String userEmail = user.email!;
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userID)
+              .collection('user_profile')
+              .doc('user_profile')
+              .set(
+            {
+              'name': '',
+              'email': userEmail,
+              'last_update': DateTime.now(),
+              'first_login': true,
+              'avatar_url': '',
+            },
+          );
+        }
+      },
     );
   }
 
