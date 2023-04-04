@@ -14,8 +14,6 @@ class UserProfilePage extends StatelessWidget {
   UserProfilePage({super.key});
 
   final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _updatePasswordController =
-      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +35,8 @@ class UserProfilePage extends StatelessWidget {
                 userAvatarUrl: '',
                 lastProfileUpdate: DateTime.now(),
                 userNameController: _userNameController,
-                updatePasswordController: _updatePasswordController,
                 isPageContentVisible: false,
                 onSave: null,
-                onPasswordUpdate: null,
                 openCamera: () {},
                 openGallery: () {},
               );
@@ -51,10 +47,8 @@ class UserProfilePage extends StatelessWidget {
                 userAvatarUrl: '',
                 lastProfileUpdate: DateTime.now(),
                 userNameController: _userNameController,
-                updatePasswordController: _updatePasswordController,
                 isPageContentVisible: false,
                 onSave: null,
-                onPasswordUpdate: null,
                 openCamera: () {},
                 openGallery: () {},
               );
@@ -65,7 +59,6 @@ class UserProfilePage extends StatelessWidget {
                 userAvatarUrl: userModel.userAvatarUrl,
                 lastProfileUpdate: userModel.lastProfileUpdateFormatted(),
                 userNameController: _userNameController,
-                updatePasswordController: _updatePasswordController,
                 isPageContentVisible: true,
                 onSave: () {
                   try {
@@ -90,11 +83,6 @@ class UserProfilePage extends StatelessWidget {
                         ImageSource.gallery,
                       );
                 },
-                onPasswordUpdate: () {
-                  context.read<ProfileCubit>().updatePassword(
-                        password: _updatePasswordController.text,
-                      );
-                },
               );
             case Status.error:
               return UserProfilePageBody(
@@ -103,10 +91,8 @@ class UserProfilePage extends StatelessWidget {
                 userAvatarUrl: '',
                 lastProfileUpdate: DateTime.now(),
                 userNameController: _userNameController,
-                updatePasswordController: _updatePasswordController,
                 isPageContentVisible: false,
                 onSave: null,
-                onPasswordUpdate: null,
                 openCamera: () {},
                 openGallery: () {},
               );
@@ -125,10 +111,8 @@ class UserProfilePageBody extends StatelessWidget {
     required this.userAvatarUrl,
     required this.lastProfileUpdate,
     required this.userNameController,
-    required this.updatePasswordController,
     required this.isPageContentVisible,
     required this.onSave,
-    required this.onPasswordUpdate,
     required this.openCamera,
     required this.openGallery,
   });
@@ -138,10 +122,8 @@ class UserProfilePageBody extends StatelessWidget {
   final String userAvatarUrl;
   final dynamic lastProfileUpdate;
   final TextEditingController userNameController;
-  final TextEditingController updatePasswordController;
   final bool isPageContentVisible;
   final Function()? onSave;
-  final Function()? onPasswordUpdate;
   final Function() openCamera;
   final Function() openGallery;
 
@@ -179,9 +161,7 @@ class UserProfilePageBody extends StatelessWidget {
             child: ProfileBodyWidget(
               isPageContentVisible: isPageContentVisible,
               userNameController: userNameController,
-              updatePasswordController: updatePasswordController,
               lastProfileUpdate: lastProfileUpdate,
-              onPasswordUpdate: onPasswordUpdate,
             ),
           ),
         ],
