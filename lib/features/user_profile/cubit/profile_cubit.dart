@@ -51,12 +51,15 @@ class ProfileCubit extends Cubit<ProfileState> {
           });
   }
 
-  Future<void> updateUserProfile(
-    String userName,
-    DateTime updateDate,
-  ) async {
+  Future<void> updateUserProfile({
+    required String userName,
+    required DateTime updateDate,
+  }) async {
     try {
-      await _userRepository.updateUserProfile(userName, updateDate);
+      await _userRepository.updateUserProfile(
+        userName: userName,
+        updateDate: updateDate,
+      );
     } catch (error) {
       emit(ProfileState(
         status: Status.error,
@@ -69,18 +72,23 @@ class ProfileCubit extends Cubit<ProfileState> {
     required String password,
   }) async {
     try {
-      await _userRepository.updatePassword(password);
+      await _userRepository.updatePassword(
+        password: password,
+      );
     } catch (error) {
       throw Exception(error);
     }
   }
 
-  Future<void> pickAndUploadAvatar(
-    String avatarUrl,
-    ImageSource source,
-  ) async {
+  Future<void> pickAndUploadAvatar({
+    required String avatarUrl,
+    required ImageSource source,
+  }) async {
     try {
-      await _userRepository.pickAndUploadImage(avatarUrl, source);
+      await _userRepository.pickAndUploadImage(
+        avatarUrl: avatarUrl,
+        source: source,
+      );
     } catch (error) {
       emit(ProfileState(
         status: Status.error,

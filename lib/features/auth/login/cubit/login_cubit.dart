@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/auth_repository.dart';
 
 part 'login_state.dart';
@@ -7,8 +9,7 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit(this._authRepository)
       : super(const LoginState(
-          email: '',
-          password: '',
+          status: Status.initial,
         ));
 
   final AuthRepository _authRepository;
@@ -19,8 +20,8 @@ class LoginCubit extends Cubit<LoginState> {
   }) async {
     try {
       await _authRepository.register(email, password);
-    } catch (error) {
-      throw Exception(error);
+    } on FirebaseAuthException catch (error) {
+      throw FirebaseAuthException(code: error.toString());
     }
   }
 
@@ -37,19 +38,12 @@ class LoginCubit extends Cubit<LoginState> {
     required String password,
   }) async {
     try {
-      await _authRepository.signIn(email, password);
-    } catch (error) {
-      throw Exception(error);
-    }
-  }
-
-  Future<void> updatePassword({
-    required String password,
-  }) async {
-    try {
-      await _authRepository.updatePassword(password);
-    } catch (error) {
-      throw Exception(error);
+      await _authRepository.signIn(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (error) {
+      throw Exception(error.toString());
     }
   }
 
@@ -57,7 +51,9 @@ class LoginCubit extends Cubit<LoginState> {
     required String email,
   }) async {
     try {
-      await _authRepository.resetPassword(email);
+      await _authRepository.resetPassword(
+        email: email,
+      );
     } catch (error) {
       throw Exception(error);
     }

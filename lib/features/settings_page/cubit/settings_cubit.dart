@@ -21,7 +21,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     required String password,
   }) async {
     try {
-      await _userRepository.updatePassword(password);
+      await _userRepository.updatePassword(password: password);
       emit(
         const SettingsState(status: Status.success),
       );

@@ -51,10 +51,10 @@ class UserRepository {
     });
   }
 
-  Future<void> updateUserProfile(
-    String userName,
-    DateTime updateDate,
-  ) async {
+  Future<void> updateUserProfile({
+    required String userName,
+    required DateTime updateDate,
+  }) async {
     final userID = FirebaseAuth.instance.currentUser?.uid;
     if (userID == null) {
       throw Exception('User is not logged in');
@@ -73,9 +73,9 @@ class UserRepository {
     );
   }
 
-  Future<void> updatePassword(
-    String password,
-  ) async {
+  Future<void> updatePassword({
+    required String password,
+  }) async {
     final userID = FirebaseAuth.instance.currentUser?.uid;
     if (userID == null) {
       return;
@@ -84,10 +84,10 @@ class UserRepository {
     }
   }
 
-  Future<void> pickAndUploadImage(
-    String avatarUrl,
-    ImageSource source,
-  ) async {
+  Future<void> pickAndUploadImage({
+    required String avatarUrl,
+    required ImageSource source,
+  }) async {
     final firebaseStorageReference = FirebaseStorage.instance.ref();
     final userID = FirebaseAuth.instance.currentUser!.uid;
 

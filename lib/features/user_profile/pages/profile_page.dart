@@ -63,8 +63,8 @@ class UserProfilePage extends StatelessWidget {
                 onSave: () {
                   try {
                     context.read<ProfileCubit>().updateUserProfile(
-                          _userNameController.text,
-                          DateTime.now(),
+                          userName: _userNameController.text,
+                          updateDate: DateTime.now(),
                         );
                     Navigator.of(context).pop();
                   } catch (error) {
@@ -73,14 +73,14 @@ class UserProfilePage extends StatelessWidget {
                 },
                 openCamera: () {
                   context.read<ProfileCubit>().pickAndUploadAvatar(
-                        avatarUrl,
-                        ImageSource.camera,
+                        avatarUrl: avatarUrl,
+                        source: ImageSource.camera,
                       );
                 },
                 openGallery: () {
                   context.read<ProfileCubit>().pickAndUploadAvatar(
-                        avatarUrl,
-                        ImageSource.gallery,
+                        avatarUrl: avatarUrl,
+                        source: ImageSource.gallery,
                       );
                 },
               );
@@ -102,6 +102,8 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 }
+
+//TODO: Add email verification indicator
 
 class UserProfilePageBody extends StatelessWidget {
   const UserProfilePageBody({

@@ -37,19 +37,19 @@ class AuthRepository {
     );
   }
 
-  Future<void> signIn(
-    String email,
-    String password,
-  ) async {
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
   }
 
-  Future<void> updatePassword(
-    String password,
-  ) async {
+  Future<void> updatePassword({
+    required String password,
+  }) async {
     final userID = FirebaseAuth.instance.currentUser?.uid;
     if (userID == null) {
       return;
@@ -58,9 +58,9 @@ class AuthRepository {
     }
   }
 
-  Future<void> resetPassword(
-    String email,
-  ) async {
+  Future<void> resetPassword({
+    required String email,
+  }) async {
     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
