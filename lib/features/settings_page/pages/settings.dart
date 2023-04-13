@@ -7,6 +7,10 @@ class SettingsPage extends StatelessWidget {
     super.key,
   });
 
+//TODO: Add change password option
+//TODO: Add delete account with all user data
+//TODO: Add email verification sender
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
