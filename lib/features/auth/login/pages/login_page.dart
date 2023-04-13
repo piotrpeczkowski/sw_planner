@@ -132,31 +132,21 @@ class _LoginPageState extends State<LoginPage> {
                         );
                     context.read<LoginCubit>().createUserProfile();
                   } catch (error) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        duration: const Duration(seconds: 4),
-                        backgroundColor: Colors.red,
-                        content: Text('$error'),
-                      ),
-                    );
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   SnackBar(
+                    //     duration: const Duration(seconds: 4),
+                    //     backgroundColor: Colors.red,
+                    //     content: Text('$error'),
+                    //   ),
+                    // );
                   }
                 }
               } else {
                 if (_isDomainCorrect && _isPasswordCorrect) {
-                  try {
-                    context.read<LoginCubit>().signIn(
-                          email: widget.loginController.text.trim(),
-                          password: widget.passwordController.text.trim(),
-                        );
-                  } catch (error) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        duration: const Duration(seconds: 4),
-                        backgroundColor: Colors.red,
-                        content: Text('$error'),
-                      ),
-                    );
-                  }
+                  context.read<LoginCubit>().signIn(
+                        email: widget.loginController.text.trim(),
+                        password: widget.passwordController.text.trim(),
+                      );
                 }
               }
             },
@@ -166,6 +156,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+//TODO: Organize the login page code
+//TODO: Add email confirmation while registering
 
 class LoginPageBody extends StatelessWidget {
   const LoginPageBody({
