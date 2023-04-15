@@ -5,13 +5,13 @@ import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/auth_repository.dart';
 import 'package:sw_planner/data/repositories/user_repository.dart';
 import 'package:sw_planner/features/auth/login/cubit/login_cubit.dart';
+import 'package:sw_planner/features/custom_drawer/cubit/drawer_cubit.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/calendar_widget.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/drawer_header_widget.dart';
 import 'package:sw_planner/features/widgets/flag_separator_widget.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/notes_widget.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/settings_widget.dart';
 import 'package:sw_planner/features/custom_drawer/widgets/tasks_widget.dart';
-import 'package:sw_planner/features/user_profile/cubit/profile_cubit.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -21,33 +21,24 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProfileCubit(UserRepository())..start(),
-      child: BlocBuilder<ProfileCubit, ProfileState>(
+      create: (context) => DrawerCubit(UserRepository())..start(),
+      child: BlocBuilder<DrawerCubit, DrawerState>(
         builder: (context, state) {
           final userModel = state.userModel;
-          if (userModel == null) {
-            return const Drawer(
-              child: CustomDrawerBody(
-                userName: '',
-                userEmail: '',
-                userAvatarUrl: '',
-              ),
-            );
-          }
           switch (state.status) {
             case Status.initial:
-              return const Drawer(
+              return Drawer(
                 child: CustomDrawerBody(
-                  userName: '',
-                  userEmail: 'Wczytywanie...',
-                  userAvatarUrl: '',
+                  userName: userModel.userName,
+                  userEmail: userModel.userEmail,
+                  userAvatarUrl: userModel.userAvatarUrl,
                 ),
               );
             case Status.loading:
               return Drawer(
                 child: CustomDrawerBody(
-                  userName: '',
-                  userEmail: 'Wczytywanie...',
+                  userName: userModel.userName,
+                  userEmail: userModel.userEmail,
                   userAvatarUrl: userModel.userAvatarUrl,
                 ),
               );
@@ -60,11 +51,11 @@ class CustomDrawer extends StatelessWidget {
                 ),
               );
             case Status.error:
-              return const Drawer(
+              return Drawer(
                 child: CustomDrawerBody(
-                  userName: '',
-                  userEmail: 'Wystąpił błąd',
-                  userAvatarUrl: '',
+                  userName: userModel.userName,
+                  userEmail: userModel.userEmail,
+                  userAvatarUrl: userModel.userAvatarUrl,
                 ),
               );
           }
