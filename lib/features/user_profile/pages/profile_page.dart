@@ -23,35 +23,12 @@ class UserProfilePage extends StatelessWidget {
       child: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
           final userModel = state.userModel;
-          if (userModel == null) {
-            return const ProgressIndicatorPage();
-          }
-          _userNameController.text = state.userModel!.userName;
+          _userNameController.text = state.userModel.userName;
           switch (state.status) {
             case Status.initial:
-              return UserProfilePageBody(
-                userName: 'Szukam',
-                userEmail: '',
-                userAvatarUrl: '',
-                lastProfileUpdate: DateTime.now(),
-                userNameController: _userNameController,
-                isPageContentVisible: false,
-                onSave: null,
-                openCamera: () {},
-                openGallery: () {},
-              );
+              return const ProgressIndicatorPage();
             case Status.loading:
-              return UserProfilePageBody(
-                userName: 'Trwa wczytywanie',
-                userEmail: '',
-                userAvatarUrl: '',
-                lastProfileUpdate: DateTime.now(),
-                userNameController: _userNameController,
-                isPageContentVisible: false,
-                onSave: null,
-                openCamera: () {},
-                openGallery: () {},
-              );
+              return const ProgressIndicatorPage();
             case Status.success:
               return UserProfilePageBody(
                 userName: userModel.userName,
@@ -85,17 +62,7 @@ class UserProfilePage extends StatelessWidget {
                 },
               );
             case Status.error:
-              return UserProfilePageBody(
-                userName: '',
-                userEmail: '',
-                userAvatarUrl: '',
-                lastProfileUpdate: DateTime.now(),
-                userNameController: _userNameController,
-                isPageContentVisible: false,
-                onSave: null,
-                openCamera: () {},
-                openGallery: () {},
-              );
+              return const ProgressIndicatorPage();
           }
         },
       ),

@@ -13,8 +13,14 @@ part 'profile_state.dart';
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit(this._userRepository)
       : super(
-          const ProfileState(
-            userModel: null,
+          ProfileState(
+            userModel: UserModel(
+              userEmail: '',
+              userName: '',
+              userAvatarUrl: '',
+              lastProfileUpdate: DateTime.now(),
+              isFirstLogin: false,
+            ),
             status: Status.initial,
           ),
         );
@@ -25,30 +31,44 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> start() async {
     emit(
-      const ProfileState(
-        userModel: null,
+      ProfileState(
+        userModel: UserModel(
+          userEmail: '',
+          userName: '',
+          userAvatarUrl: '',
+          lastProfileUpdate: DateTime.now(),
+          isFirstLogin: false,
+        ),
         status: Status.loading,
       ),
     );
 
-    _streamSubscription =
-        _userRepository.userProfileStream().listen((userModel) {
-      emit(
-        ProfileState(
-          userModel: userModel,
-          status: Status.success,
-        ),
-      );
-    })
-          ..onError((error) {
-            emit(
-              ProfileState(
-                userModel: null,
-                status: Status.error,
-                errorMessage: error.toString(),
+    _streamSubscription = _userRepository.userProfileStream().listen(
+      (userModel) {
+        emit(
+          ProfileState(
+            userModel: userModel,
+            status: Status.success,
+          ),
+        );
+      },
+    )..onError(
+        (error) {
+          emit(
+            ProfileState(
+              userModel: UserModel(
+                userEmail: '',
+                userName: '',
+                userAvatarUrl: '',
+                lastProfileUpdate: DateTime.now(),
+                isFirstLogin: false,
               ),
-            );
-          });
+              status: Status.error,
+              errorMessage: error.toString(),
+            ),
+          );
+        },
+      );
   }
 
   Future<void> updateUserProfile({
@@ -62,6 +82,13 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
     } catch (error) {
       emit(ProfileState(
+        userModel: UserModel(
+          userEmail: '',
+          userName: '',
+          userAvatarUrl: '',
+          lastProfileUpdate: DateTime.now(),
+          isFirstLogin: false,
+        ),
         status: Status.error,
         errorMessage: error.toString(),
       ));
@@ -76,7 +103,17 @@ class ProfileCubit extends Cubit<ProfileState> {
         password: password,
       );
     } catch (error) {
-      throw Exception(error);
+      emit(ProfileState(
+        userModel: UserModel(
+          userEmail: '',
+          userName: '',
+          userAvatarUrl: '',
+          lastProfileUpdate: DateTime.now(),
+          isFirstLogin: false,
+        ),
+        status: Status.error,
+        errorMessage: error.toString(),
+      ));
     }
   }
 
@@ -91,6 +128,13 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
     } catch (error) {
       emit(ProfileState(
+        userModel: UserModel(
+          userEmail: '',
+          userName: '',
+          userAvatarUrl: '',
+          lastProfileUpdate: DateTime.now(),
+          isFirstLogin: false,
+        ),
         status: Status.error,
         errorMessage: error.toString(),
       ));
