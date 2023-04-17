@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/auth_repository.dart';
@@ -14,22 +13,222 @@ class LoginCubit extends Cubit<LoginState> {
 
   final AuthRepository _authRepository;
 
+  Future<void> start() async {
+    emit(
+      const LoginState(
+        status: Status.loading,
+        errorMessage: '',
+      ),
+    );
+  }
+
+  Future<void> switchToRegistration() async {
+    emit(const LoginState(
+      isCreatingAccount: true,
+    ));
+  }
+
+  Future<void> switchToLogin() async {
+    emit(const LoginState(
+      isCreatingAccount: false,
+    ));
+  }
+
+  Future<void> logging({
+    required String email,
+    required String password,
+  }) async {
+    if (email.contains('@sw.gov.pl')) {
+      if (password.isNotEmpty) {
+        if (password.length >= 8) {
+          signIn(
+            email: email,
+            password: password,
+          );
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: '',
+            passwordVerificationMessage: '',
+            passwordConfirmationMessage: '',
+            status: Status.initial,
+          ));
+        } else {
+          emit(const LoginState(
+            isCreatingAccount: false,
+            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: false,
+            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            status: Status.initial,
+          ));
+        }
+      } else {
+        emit(const LoginState(
+          isCreatingAccount: false,
+          passwordVerificationMessage: 'Wprowadź hasło',
+          status: Status.error,
+          errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+        ));
+        emit(const LoginState(
+          isCreatingAccount: false,
+          passwordVerificationMessage: 'Wprowadź hasło',
+          status: Status.initial,
+        ));
+      }
+    } else if (email.isEmpty) {
+      emit(const LoginState(
+        isCreatingAccount: false,
+        domainVerificationMessage: 'Wprowadź adres email',
+        status: Status.error,
+        errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+      ));
+      emit(const LoginState(
+        isCreatingAccount: false,
+        domainVerificationMessage: 'Wprowadź adres email',
+        status: Status.initial,
+      ));
+    } else {
+      emit(const LoginState(
+        isCreatingAccount: false,
+        domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+        status: Status.error,
+        errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+      ));
+      emit(const LoginState(
+        isCreatingAccount: false,
+        domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+        status: Status.initial,
+      ));
+    }
+  }
+
+  Future<void> registration({
+    required String email,
+    required String password,
+    required String confirmPassword,
+  }) async {
+    if (email.contains('@sw.gov.pl')) {
+      if (password.isNotEmpty) {
+        if (password.length >= 8) {
+          if (confirmPassword.isNotEmpty) {
+            if (confirmPassword == password) {
+              register(
+                email: email,
+                password: password,
+              );
+              createUserProfile();
+              emit(const LoginState(
+                isCreatingAccount: true,
+                domainVerificationMessage: '',
+                passwordVerificationMessage: '',
+                passwordConfirmationMessage: '',
+                status: Status.initial,
+              ));
+            } else {
+              emit(const LoginState(
+                isCreatingAccount: true,
+                passwordConfirmationMessage: 'Hasła się nie zgadzają',
+                status: Status.error,
+                errorMessage:
+                    'Wprowadzone dane są niekompletne lub niepoprawne',
+              ));
+              emit(const LoginState(
+                isCreatingAccount: true,
+                passwordConfirmationMessage: 'Hasła się nie zgadzają',
+                status: Status.initial,
+              ));
+            }
+          } else {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              passwordConfirmationMessage: 'Potwierdź hasło',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              passwordConfirmationMessage: 'Potwierdź hasło',
+              status: Status.initial,
+            ));
+          }
+        } else {
+          emit(const LoginState(
+            isCreatingAccount: true,
+            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: true,
+            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            status: Status.initial,
+          ));
+        }
+      } else {
+        emit(const LoginState(
+          isCreatingAccount: true,
+          passwordVerificationMessage: 'Wprowadź hasło',
+          status: Status.error,
+          errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+        ));
+        emit(const LoginState(
+          isCreatingAccount: true,
+          passwordVerificationMessage: 'Wprowadź hasło',
+          status: Status.initial,
+        ));
+      }
+    } else if (email.isEmpty) {
+      emit(const LoginState(
+        isCreatingAccount: true,
+        domainVerificationMessage: 'Wprowadź adres email',
+        status: Status.error,
+        errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+      ));
+      emit(const LoginState(
+        isCreatingAccount: true,
+        domainVerificationMessage: 'Wprowadź adres email',
+        status: Status.initial,
+      ));
+    } else {
+      emit(const LoginState(
+        isCreatingAccount: true,
+        domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+        status: Status.error,
+        errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+      ));
+      emit(const LoginState(
+        isCreatingAccount: true,
+        domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+        status: Status.initial,
+      ));
+    }
+  }
+
   Future<void> register({
     required String email,
     required String password,
   }) async {
     try {
       await _authRepository.register(email, password);
-    } on FirebaseAuthException catch (error) {
-      throw FirebaseAuthException(code: error.toString());
+    } catch (e) {
+      emit(LoginState(
+        status: Status.error,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
   Future<void> createUserProfile() async {
     try {
       await _authRepository.createUserInfo();
-    } catch (error) {
-      throw Exception(error);
+    } catch (e) {
+      emit(LoginState(
+        status: Status.error,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
@@ -42,8 +241,11 @@ class LoginCubit extends Cubit<LoginState> {
         email: email,
         password: password,
       );
-    } on FirebaseAuthException catch (error) {
-      throw Exception(error.toString());
+    } catch (e) {
+      emit(LoginState(
+        status: Status.error,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
@@ -54,12 +256,24 @@ class LoginCubit extends Cubit<LoginState> {
       await _authRepository.resetPassword(
         email: email,
       );
-    } catch (error) {
-      throw Exception(error);
+    } catch (e) {
+      emit(LoginState(
+        status: Status.error,
+        errorMessage: e.toString(),
+      ));
+      start();
     }
   }
 
   Future<void> signOut() async {
-    await _authRepository.signOut();
+    try {
+      await _authRepository.signOut();
+    } catch (e) {
+      emit(LoginState(
+        status: Status.error,
+        errorMessage: e.toString(),
+      ));
+      start();
+    }
   }
 }

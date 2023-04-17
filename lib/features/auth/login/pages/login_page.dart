@@ -1,157 +1,75 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/auth_repository.dart';
 import 'package:sw_planner/features/auth/login/cubit/login_cubit.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  final TextEditingController loginController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  bool _isCreatingAccount = false;
-  bool _isDomainCorrect = false;
-  bool _isPasswordCorrect = false;
-  bool _isPasswordConfirmed = false;
-  String _loginMessage = '';
-  String _passwordMessage = '';
-  String _confirmPasswordMessage = '';
+  final loginController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => LoginCubit(AuthRepository()),
-      child: BlocBuilder<LoginCubit, LoginState>(
-        builder: (context, state) {
-          return LoginPageBody(
-            appFooter: 'SW Planner\u00A9 2023 | v.1.0.1',
-            loginController: widget.loginController,
-            passwordController: widget.passwordController,
-            confirmPasswordController: widget.confirmPasswordController,
-            isCreatingAccount: _isCreatingAccount,
-            loginMessage: _loginMessage,
-            passwordMessage: _passwordMessage,
-            confirmPasswordMessage: _confirmPasswordMessage,
-            onLoginAndRegisterSwitch: () {
-              if (_isCreatingAccount) {
-                setState(() {
-                  _isCreatingAccount = false;
-                  widget.loginController.clear();
-                  _loginMessage = '';
-                  widget.passwordController.clear();
-                  _passwordMessage = '';
-                  widget.confirmPasswordController.clear();
-                  _confirmPasswordMessage = '';
-                });
-              } else {
-                setState(() {
-                  _isCreatingAccount = true;
-                  widget.loginController.clear();
-                  _loginMessage = '';
-                  widget.passwordController.clear();
-                  _passwordMessage = '';
-                  widget.confirmPasswordController.clear();
-                  _confirmPasswordMessage = '';
-                });
-              }
-            },
-            onLoginButtonTap: () {
-              if (widget.loginController.text.contains('@sw.gov.pl')) {
-                setState(() {
-                  _loginMessage = '';
-                  _isDomainCorrect = true;
-                });
-              } else if (widget.loginController.text.isEmpty) {
-                setState(() {
-                  _loginMessage = 'Wprowadź adres email';
-                  _isDomainCorrect = false;
-                });
-              } else {
-                setState(() {
-                  _loginMessage = 'Domena @sw.gov.pl jest wymagana';
-                  _isDomainCorrect = false;
-                });
-              }
-
-              if (widget.passwordController.text.isNotEmpty) {
-                if (widget.passwordController.text.length < 8) {
-                  setState(() {
-                    _passwordMessage =
-                        'Hasło musi zawierać conajmniej 8 znaków';
-                    _isPasswordCorrect = false;
-                  });
+      child: BlocListener<LoginCubit, LoginState>(
+        listener: (context, state) {
+          if (state.status == Status.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: const Duration(seconds: 4),
+                backgroundColor: Colors.red,
+                content: Text(state.errorMessage),
+              ),
+            );
+          }
+        },
+        child: BlocBuilder<LoginCubit, LoginState>(
+          builder: (context, state) {
+            return LoginPageBody(
+              appFooter: 'SW Planner\u00A9 2023 | v.1.0.1',
+              loginController: loginController,
+              passwordController: passwordController,
+              confirmPasswordController: confirmPasswordController,
+              isCreatingAccount: state.isCreatingAccount,
+              loginMessage: state.domainVerificationMessage,
+              passwordMessage: state.passwordVerificationMessage,
+              confirmPasswordMessage: state.passwordConfirmationMessage,
+              onLoginAndRegisterSwitch: () {
+                if (state.isCreatingAccount) {
+                  context.read<LoginCubit>().switchToLogin();
+                  loginController.clear();
+                  passwordController.clear();
+                  confirmPasswordController.clear();
                 } else {
-                  setState(() {
-                    _passwordMessage = '';
-                    _isPasswordCorrect = true;
-                  });
+                  context.read<LoginCubit>().switchToRegistration();
+                  loginController.clear();
+                  passwordController.clear();
+                  confirmPasswordController.clear();
                 }
-              } else {
-                setState(() {
-                  _passwordMessage = 'Wprowadź hasło';
-                  _isPasswordCorrect = false;
-                });
-              }
-
-              if (widget.confirmPasswordController.text.isNotEmpty) {
-                if (widget.confirmPasswordController.text ==
-                    widget.passwordController.text) {
-                  setState(() {
-                    _confirmPasswordMessage = '';
-                    _isPasswordConfirmed = true;
-                  });
+              },
+              onLoginButtonTap: () {
+                if (state.isCreatingAccount) {
+                  context.read<LoginCubit>().registration(
+                        email: loginController.text.trim(),
+                        password: passwordController.text.trim(),
+                        confirmPassword: confirmPasswordController.text.trim(),
+                      );
                 } else {
-                  setState(() {
-                    _confirmPasswordMessage = 'Hasła się nie zgadzają';
-                    _isPasswordConfirmed = false;
-                  });
-                }
-              } else {
-                setState(() {
-                  _confirmPasswordMessage = 'Potwierdź hasło';
-                  _isPasswordConfirmed = false;
-                });
-              }
-
-              if (_isCreatingAccount) {
-                if (_isDomainCorrect &&
-                    _isPasswordCorrect &&
-                    _isPasswordConfirmed) {
-                  try {
-                    context.read<LoginCubit>().register(
-                          email: widget.loginController.text.trim(),
-                          password: widget.passwordController.text.trim(),
-                        );
-                    context.read<LoginCubit>().createUserProfile();
-                  } catch (error) {
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   SnackBar(
-                    //     duration: const Duration(seconds: 4),
-                    //     backgroundColor: Colors.red,
-                    //     content: Text('$error'),
-                    //   ),
-                    // );
-                  }
-                }
-              } else {
-                if (_isDomainCorrect && _isPasswordCorrect) {
-                  context.read<LoginCubit>().signIn(
-                        email: widget.loginController.text.trim(),
-                        password: widget.passwordController.text.trim(),
+                  context.read<LoginCubit>().logging(
+                        email: loginController.text.trim(),
+                        password: passwordController.text.trim(),
                       );
                 }
-              }
-            },
-          );
-        },
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -220,7 +138,7 @@ class LoginPageBody extends StatelessWidget {
             ),
             ListView(
               padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.20,
+                top: MediaQuery.of(context).size.height * 0.18,
                 bottom: MediaQuery.of(context).size.height * 0.05,
                 left: 15,
                 right: 15,
@@ -316,19 +234,25 @@ class LoginPageBody extends StatelessWidget {
                 ),
                 Visibility(
                   visible: loginMessage == '' ? false : true,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 0),
-                      child: Text(
-                        loginMessage,
-                        style: GoogleFonts.lato(
-                          color: const Color.fromARGB(255, 202, 13, 0),
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.info_outline,
+                        color: Color.fromARGB(255, 202, 13, 0),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: Text(
+                          loginMessage,
+                          style: GoogleFonts.lato(
+                            color: const Color.fromARGB(255, 202, 13, 0),
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
                 Padding(
@@ -361,19 +285,25 @@ class LoginPageBody extends StatelessWidget {
                 ),
                 Visibility(
                   visible: passwordMessage == '' ? false : true,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 0),
-                      child: Text(
-                        passwordMessage,
-                        style: GoogleFonts.lato(
-                          color: const Color.fromARGB(255, 202, 13, 0),
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.info_outline,
+                        color: Color.fromARGB(255, 202, 13, 0),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: Text(
+                          passwordMessage,
+                          style: GoogleFonts.lato(
+                            color: const Color.fromARGB(255, 202, 13, 0),
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
                 Visibility(
@@ -411,19 +341,25 @@ class LoginPageBody extends StatelessWidget {
                   visible: isCreatingAccount && confirmPasswordMessage != ''
                       ? true
                       : false,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 0),
-                      child: Text(
-                        confirmPasswordMessage,
-                        style: GoogleFonts.lato(
-                          color: const Color.fromARGB(255, 202, 13, 0),
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.info_outline,
+                        color: Color.fromARGB(255, 202, 13, 0),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: Text(
+                          confirmPasswordMessage,
+                          style: GoogleFonts.lato(
+                            color: const Color.fromARGB(255, 202, 13, 0),
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
                 Visibility(
