@@ -28,7 +28,7 @@ class LoginCubit extends Cubit<LoginState> {
     ));
   }
 
-  Future<void> switchToLogin() async {
+  Future<void> switchToLogging() async {
     emit(const LoginState(
       isCreatingAccount: false,
     ));
@@ -79,29 +79,93 @@ class LoginCubit extends Cubit<LoginState> {
         ));
       }
     } else if (email.isEmpty) {
-      emit(const LoginState(
-        isCreatingAccount: false,
-        domainVerificationMessage: 'Wprowadź adres email',
-        status: Status.error,
-        errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
-      ));
-      emit(const LoginState(
-        isCreatingAccount: false,
-        domainVerificationMessage: 'Wprowadź adres email',
-        status: Status.initial,
-      ));
+      if (password.isNotEmpty) {
+        if (password.length >= 8) {
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: 'Wprowadź adres email',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: 'Wprowadź adres email',
+            status: Status.initial,
+          ));
+        } else {
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: 'Wprowadź adres email',
+            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: 'Wprowadź adres email',
+            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            status: Status.initial,
+          ));
+        }
+      } else {
+        emit(const LoginState(
+          isCreatingAccount: false,
+          domainVerificationMessage: 'Wprowadź adres email',
+          passwordVerificationMessage: 'Wprowadź hasło',
+          status: Status.error,
+          errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+        ));
+        emit(const LoginState(
+          isCreatingAccount: false,
+          domainVerificationMessage: 'Wprowadź adres email',
+          passwordVerificationMessage: 'Wprowadź hasło',
+          status: Status.initial,
+        ));
+      }
     } else {
-      emit(const LoginState(
-        isCreatingAccount: false,
-        domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
-        status: Status.error,
-        errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
-      ));
-      emit(const LoginState(
-        isCreatingAccount: false,
-        domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
-        status: Status.initial,
-      ));
+      if (password.isNotEmpty) {
+        if (password.length >= 8) {
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+            status: Status.initial,
+          ));
+        } else {
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: false,
+            domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            status: Status.initial,
+          ));
+        }
+      } else {
+        emit(const LoginState(
+          isCreatingAccount: false,
+          domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+          passwordVerificationMessage: 'Wprowadź hasło',
+          status: Status.error,
+          errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+        ));
+        emit(const LoginState(
+          isCreatingAccount: false,
+          domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+          passwordVerificationMessage: 'Wprowadź hasło',
+          status: Status.initial,
+        ));
+      }
     }
   }
 
@@ -113,96 +177,300 @@ class LoginCubit extends Cubit<LoginState> {
     if (email.contains('@sw.gov.pl')) {
       if (password.isNotEmpty) {
         if (password.length >= 8) {
-          if (confirmPassword.isNotEmpty) {
-            if (confirmPassword == password) {
-              register(
-                email: email,
-                password: password,
-              );
-              createUserProfile();
-              emit(const LoginState(
-                isCreatingAccount: true,
-                domainVerificationMessage: '',
-                passwordVerificationMessage: '',
-                passwordConfirmationMessage: '',
-                status: Status.initial,
-              ));
-            } else {
-              emit(const LoginState(
-                isCreatingAccount: true,
-                passwordConfirmationMessage: 'Hasła się nie zgadzają',
-                status: Status.error,
-                errorMessage:
-                    'Wprowadzone dane są niekompletne lub niepoprawne',
-              ));
-              emit(const LoginState(
-                isCreatingAccount: true,
-                passwordConfirmationMessage: 'Hasła się nie zgadzają',
-                status: Status.initial,
-              ));
-            }
+          if (confirmPassword == password) {
+            register(
+              email: email,
+              password: password,
+            );
+            createUserProfile();
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: '',
+              passwordVerificationMessage: '',
+              passwordConfirmationMessage: '',
+              status: Status.initial,
+            ));
           } else {
             emit(const LoginState(
               isCreatingAccount: true,
-              passwordConfirmationMessage: 'Potwierdź hasło',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
               status: Status.error,
               errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
             ));
             emit(const LoginState(
               isCreatingAccount: true,
-              passwordConfirmationMessage: 'Potwierdź hasło',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
               status: Status.initial,
             ));
           }
         } else {
+          if (confirmPassword == password) {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+              status: Status.initial,
+            ));
+          } else {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.initial,
+            ));
+          }
+        }
+      } else {
+        if (confirmPassword == password) {
           emit(const LoginState(
             isCreatingAccount: true,
-            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Potwierdź hasło',
             status: Status.error,
             errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
           ));
           emit(const LoginState(
             isCreatingAccount: true,
-            passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Potwierdź hasło',
+            status: Status.initial,
+          ));
+        } else {
+          emit(const LoginState(
+            isCreatingAccount: true,
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Hasła się nie zgadzają',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: true,
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Hasła się nie zgadzają',
             status: Status.initial,
           ));
         }
-      } else {
-        emit(const LoginState(
-          isCreatingAccount: true,
-          passwordVerificationMessage: 'Wprowadź hasło',
-          status: Status.error,
-          errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
-        ));
-        emit(const LoginState(
-          isCreatingAccount: true,
-          passwordVerificationMessage: 'Wprowadź hasło',
-          status: Status.initial,
-        ));
       }
     } else if (email.isEmpty) {
-      emit(const LoginState(
-        isCreatingAccount: true,
-        domainVerificationMessage: 'Wprowadź adres email',
-        status: Status.error,
-        errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
-      ));
-      emit(const LoginState(
-        isCreatingAccount: true,
-        domainVerificationMessage: 'Wprowadź adres email',
-        status: Status.initial,
-      ));
+      if (password.isNotEmpty) {
+        if (password.length >= 8) {
+          if (confirmPassword == password) {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Wprowadź adres email',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Wprowadź adres email',
+              status: Status.initial,
+            ));
+          } else {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Wprowadź adres email',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Wprowadź adres email',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.initial,
+            ));
+          }
+        } else {
+          if (confirmPassword == password) {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Wprowadź adres email',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Wprowadź adres email',
+              status: Status.initial,
+            ));
+          } else {
+            emit(const LoginState(
+              isCreatingAccount: false,
+              domainVerificationMessage: 'Wprowadź adres email',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Wprowadź adres email',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.initial,
+            ));
+          }
+        }
+      } else {
+        if (confirmPassword == password) {
+          emit(const LoginState(
+            isCreatingAccount: true,
+            domainVerificationMessage: 'Wprowadź adres email',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Potwierdź hasło',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: true,
+            domainVerificationMessage: 'Wprowadź adres email',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Potwierdź hasło',
+            status: Status.initial,
+          ));
+        } else {
+          emit(const LoginState(
+            isCreatingAccount: true,
+            domainVerificationMessage: 'Wprowadź adres email',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Hasła się nie zgadzają',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: true,
+            domainVerificationMessage: 'Wprowadź adres email',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Hasła się nie zgadzają',
+            status: Status.initial,
+          ));
+        }
+      }
     } else {
-      emit(const LoginState(
-        isCreatingAccount: true,
-        domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+      if (password.isNotEmpty) {
+        if (password.length >= 8) {
+          if (confirmPassword == password) {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+              status: Status.initial,
+            ));
+          } else {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.initial,
+            ));
+          }
+        } else {
+          if (confirmPassword == password) {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+              passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+              passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+              status: Status.initial,
+            ));
+          } else {
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+              passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.error,
+              errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+            ));
+            emit(const LoginState(
+              isCreatingAccount: true,
+              domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+              passwordVerificationMessage: 'Hasło musi zawierać min. 8 znaków',
+              passwordConfirmationMessage: 'Hasła się nie zgadzają',
+              status: Status.initial,
+            ));
+          }
+        }
+      } else {
+        if (confirmPassword == password) {
+          emit(const LoginState(
+            isCreatingAccount: true,
+            domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Potwierdź hasło',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: true,
+            domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Potwierdź hasło',
+            status: Status.initial,
+          ));
+        } else {
+          emit(const LoginState(
+            isCreatingAccount: true,
+            domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Hasła się nie zgadzają',
+            status: Status.error,
+            errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
+          ));
+          emit(const LoginState(
+            isCreatingAccount: true,
+            domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
+            passwordVerificationMessage: 'Wprowadź hasło',
+            passwordConfirmationMessage: 'Hasła się nie zgadzają',
+            status: Status.initial,
+          ));
+        }
+      }
+    }
+  }
+
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _authRepository.signIn(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      emit(LoginState(
         status: Status.error,
-        errorMessage: 'Wprowadzone dane są niekompletne lub niepoprawne',
-      ));
-      emit(const LoginState(
-        isCreatingAccount: true,
-        domainVerificationMessage: 'Domena @sw.gov.pl jest wymagana',
-        status: Status.initial,
+        errorMessage: e.toString(),
       ));
     }
   }
@@ -224,23 +492,6 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> createUserProfile() async {
     try {
       await _authRepository.createUserInfo();
-    } catch (e) {
-      emit(LoginState(
-        status: Status.error,
-        errorMessage: e.toString(),
-      ));
-    }
-  }
-
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      await _authRepository.signIn(
-        email: email,
-        password: password,
-      );
     } catch (e) {
       emit(LoginState(
         status: Status.error,
