@@ -4,11 +4,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sw_planner/core/enums.dart';
 import 'package:sw_planner/data/repositories/auth_repository.dart';
 import 'package:sw_planner/features/auth/login/cubit/login_cubit.dart';
+import 'package:sw_planner/features/auth/widgets/app_version_widget.dart';
+import 'package:sw_planner/features/auth/widgets/confirm_password_message_widget.dart';
+import 'package:sw_planner/features/auth/widgets/confirm_password_widget.dart';
+import 'package:sw_planner/features/auth/widgets/email_message_widget.dart';
+import 'package:sw_planner/features/auth/widgets/email_widget.dart';
+import 'package:sw_planner/features/auth/widgets/login_button_widget.dart';
+import 'package:sw_planner/features/auth/widgets/login_header_widget.dart';
+import 'package:sw_planner/features/auth/widgets/password_message_widget.dart';
+import 'package:sw_planner/features/auth/widgets/password_widget.dart';
+import 'package:sw_planner/features/auth/widgets/remind_password_widget.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  final loginController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -31,23 +41,23 @@ class LoginPage extends StatelessWidget {
         child: BlocBuilder<LoginCubit, LoginState>(
           builder: (context, state) {
             return LoginPageBody(
-              appFooter: 'SW Planner\u00A9 2023 | v.1.0.1',
-              loginController: loginController,
+              appVersion: 'SW Planner\u00A9 2023 | v.1.0.1',
+              emailController: emailController,
               passwordController: passwordController,
               confirmPasswordController: confirmPasswordController,
               isCreatingAccount: state.isCreatingAccount,
-              loginMessage: state.domainVerificationMessage,
+              emailMessage: state.domainVerificationMessage,
               passwordMessage: state.passwordVerificationMessage,
               confirmPasswordMessage: state.passwordConfirmationMessage,
               onLoginAndRegisterSwitch: () {
                 if (state.isCreatingAccount) {
                   context.read<LoginCubit>().switchToLogging();
-                  loginController.clear();
+                  emailController.clear();
                   passwordController.clear();
                   confirmPasswordController.clear();
                 } else {
                   context.read<LoginCubit>().switchToRegistration();
-                  loginController.clear();
+                  emailController.clear();
                   passwordController.clear();
                   confirmPasswordController.clear();
                 }
@@ -55,13 +65,13 @@ class LoginPage extends StatelessWidget {
               onLoginButtonTap: () {
                 if (state.isCreatingAccount) {
                   context.read<LoginCubit>().registration(
-                        email: loginController.text.trim(),
+                        email: emailController.text.trim(),
                         password: passwordController.text.trim(),
                         confirmPassword: confirmPasswordController.text.trim(),
                       );
                 } else {
                   context.read<LoginCubit>().logging(
-                        email: loginController.text.trim(),
+                        email: emailController.text.trim(),
                         password: passwordController.text.trim(),
                       );
                 }
@@ -74,67 +84,55 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-//TODO: Organize the login page code
 //TODO: Add email confirmation while registering
 
 class LoginPageBody extends StatelessWidget {
   const LoginPageBody({
     super.key,
-    required this.appFooter,
-    required this.loginController,
+    required this.appVersion,
+    required this.emailController,
     required this.passwordController,
     required this.confirmPasswordController,
     required this.isCreatingAccount,
     required this.onLoginAndRegisterSwitch,
     required this.onLoginButtonTap,
-    required this.loginMessage,
+    required this.emailMessage,
     required this.passwordMessage,
     required this.confirmPasswordMessage,
   });
 
-  final String appFooter;
-  final TextEditingController loginController;
+  final String appVersion;
+  final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
   final bool isCreatingAccount;
   final void Function() onLoginAndRegisterSwitch;
   final void Function() onLoginButtonTap;
-  final String loginMessage;
+  final String emailMessage;
   final String passwordMessage;
   final String confirmPasswordMessage;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color.fromARGB(255, 84, 152, 255),
-            Color.fromARGB(255, 13, 71, 161),
-          ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(255, 84, 152, 255),
+              Color.fromARGB(255, 13, 71, 161),
+            ],
+          ),
         ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
+        child: Stack(
           alignment: Alignment.topCenter,
           children: [
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.05,
-              right: 15,
-              child: Text(
-                appFooter,
-                style: GoogleFonts.lato(
-                  color: Colors.white.withOpacity(0.3),
-                  fontSize: 12,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
+            AppVersionWidget(appVersion: appVersion),
             ListView(
               padding: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height * 0.18,
@@ -143,257 +141,38 @@ class LoginPageBody extends StatelessWidget {
                 right: 15,
               ),
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 40.0),
-                      child: Text(
-                        isCreatingAccount ? 'Zarejestruj się' : 'Zaloguj się',
-                        style: GoogleFonts.lato(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0),
-                      child: Text(
-                        isCreatingAccount
-                            ? 'Witaj! Zarejestruj się, aby kontynuować.'
-                            : 'Witaj! Zaloguj się, aby kontynuować.',
-                        style: GoogleFonts.lato(
-                          color: Colors.white.withOpacity(0.9),
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            isCreatingAccount
-                                ? 'Masz konto?  '
-                                : 'Nie masz konta?  ',
-                            style: GoogleFonts.lato(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          InkWell(
-                            onTap: onLoginAndRegisterSwitch,
-                            child: Text(
-                              isCreatingAccount
-                                  ? 'Zaloguj się'
-                                  : 'Zarejestruj się',
-                              style: GoogleFonts.lato(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                LoginHeaderWidget(
+                  isCreatingAccount: isCreatingAccount,
+                  onLoginAndRegisterSwitch: onLoginAndRegisterSwitch,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: TextFormField(
-                    controller: loginController,
-                    keyboardType: TextInputType.emailAddress,
-                    autofillHints: const [AutofillHints.email],
-                    minLines: 1,
-                    textInputAction: TextInputAction.done,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      label: Text(
-                        isCreatingAccount ? 'Podaj e-mail' : 'Login (e-mail)',
-                        style: GoogleFonts.lato(
-                          color: Colors.white70,
-                        ),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: Colors.white,
-                        ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
+                EmailWidget(
+                  emailController: emailController,
+                  isCreatingAccount: isCreatingAccount,
                 ),
-                Visibility(
-                  visible: loginMessage == '' ? false : true,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: Color.fromARGB(255, 202, 13, 0),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: Text(
-                          loginMessage,
-                          style: GoogleFonts.lato(
-                            color: const Color.fromARGB(255, 202, 13, 0),
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                EmailMessageWidget(
+                  emailMessage: emailMessage,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: TextField(
-                    controller: passwordController,
-                    keyboardType: TextInputType.text,
-                    obscureText: true,
-                    minLines: 1,
-                    textInputAction: TextInputAction.done,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      label: Text(
-                        isCreatingAccount ? 'Ustaw hasło' : 'Hasło',
-                        style: GoogleFonts.lato(
-                          color: Colors.white70,
-                        ),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: Colors.white,
-                        ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
+                PasswordWidget(
+                  passwordController: passwordController,
+                  isCreatingAccount: isCreatingAccount,
                 ),
-                Visibility(
-                  visible: passwordMessage == '' ? false : true,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: Color.fromARGB(255, 202, 13, 0),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: Text(
-                          passwordMessage,
-                          style: GoogleFonts.lato(
-                            color: const Color.fromARGB(255, 202, 13, 0),
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                PasswordMessageWidget(
+                  passwordMessage: passwordMessage,
                 ),
-                Visibility(
-                  visible: isCreatingAccount ? true : false,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: TextField(
-                      controller: confirmPasswordController,
-                      keyboardType: TextInputType.text,
-                      obscureText: true,
-                      minLines: 1,
-                      textInputAction: TextInputAction.done,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        label: Text(
-                          'Potwierdź hasło',
-                          style: GoogleFonts.lato(
-                            color: Colors.white70,
-                          ),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Colors.white,
-                          ),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
+                ConfirmPasswordWidget(
+                  isCreatingAccount: isCreatingAccount,
+                  confirmPasswordController: confirmPasswordController,
                 ),
-                Visibility(
-                  visible: isCreatingAccount && confirmPasswordMessage != ''
-                      ? true
-                      : false,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: Color.fromARGB(255, 202, 13, 0),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: Text(
-                          confirmPasswordMessage,
-                          style: GoogleFonts.lato(
-                            color: const Color.fromARGB(255, 202, 13, 0),
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                ConfirmPasswordMessageWidget(
+                  isCreatingAccount: isCreatingAccount,
+                  confirmPasswordMessage: confirmPasswordMessage,
                 ),
-                Visibility(
-                  visible: isCreatingAccount ? false : true,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Nie pamiętasz hasła?',
-                          style: GoogleFonts.lato(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                RemindPasswordWidget(
+                  isCreatingAccount: isCreatingAccount,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0, bottom: 10),
-                  child: ElevatedButton(
-                    onPressed: onLoginButtonTap,
-                    child: Text(
-                      isCreatingAccount ? 'ZAREJESTRUJ' : 'ZALOGUJ',
-                      style: GoogleFonts.lato(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ),
+                LoginButtonWidget(
+                  onLoginButtonTap: onLoginButtonTap,
+                  isCreatingAccount: isCreatingAccount,
                 ),
                 Text(
                   isCreatingAccount
