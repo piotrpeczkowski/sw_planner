@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sw_planner/features/tasks_page/widgets/task_widget.dart';
+import 'package:sw_planner/features/tasks_page/widgets/task_widget/task_widget.dart';
 
 class CurrentTasks extends StatelessWidget {
   const CurrentTasks({
