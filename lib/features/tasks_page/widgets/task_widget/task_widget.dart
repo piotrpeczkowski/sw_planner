@@ -1,50 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sw_planner/core/enums.dart';
+import 'package:sw_planner/features/tasks_page/widgets/task_widget/cubit/task_widget_cubit.dart';
 
-class TaskWidget extends StatefulWidget {
+class TaskWidget extends StatelessWidget {
   const TaskWidget({
     super.key,
   });
 
   @override
-  State<TaskWidget> createState() => _TaskWidgetState();
-}
-
-class _TaskWidgetState extends State<TaskWidget> {
-  Color _taskDetailsContainerColor = Colors.white;
-  bool _isTaskContainerExpanded = false;
-  int _taskDescriptionMaxLines = 3;
-  int _taskTitleMaxLines = 1;
-  @override
   Widget build(BuildContext context) {
-    return TaskWidgetBody(
-      taskId: '',
-      taskTitle: 'Przykładowy tytuł taska',
-      taskEditDate: '10.03.2023',
-      taskDeadlineDate: '31.03.2023, 15:00',
-      taskPriority: 'Niski',
-      taskDescription:
-          'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
-      taskDescriptionMaxLines: _taskDescriptionMaxLines,
-      taskTitleMaxLines: _taskTitleMaxLines,
-      taskDetailsContainerColor: _taskDetailsContainerColor,
-      isTaskContainerExpanded: _isTaskContainerExpanded,
-      onTaskContainerTap: () {
-        setState(() {
-          if (_isTaskContainerExpanded == false) {
-            _taskDetailsContainerColor =
-                const Color.fromARGB(255, 220, 239, 255);
-            _isTaskContainerExpanded = true;
-            _taskDescriptionMaxLines = 15;
-            _taskTitleMaxLines = 3;
-          } else {
-            _taskDetailsContainerColor = Colors.white;
-            _isTaskContainerExpanded = false;
-            _taskDescriptionMaxLines = 3;
-            _taskTitleMaxLines = 1;
+    return BlocProvider(
+      create: (context) => TaskWidgetCubit(),
+      child: BlocConsumer<TaskWidgetCubit, TaskWidgetState>(
+        listener: (context, state) {
+          if (state.status == Status.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: const Duration(seconds: 4),
+                backgroundColor: Colors.red,
+                content: Text(state.errorMessage),
+              ),
+            );
           }
-        });
-      },
+        },
+        builder: (context, state) {
+          final isTaskContainerExpanded = state.isExpanded;
+          final taskDetailsContainerColor = state.detailsContainerColor;
+          final taskTitleMaxLines = state.titleMaxLines;
+          final taskDescriptionMaxLines = state.descriptionMaxLines;
+          return TaskWidgetBody(
+            taskId: '',
+            taskTitle: 'Przykładowy tytuł taska',
+            taskEditDate: '10.03.2023',
+            taskDeadlineDate: '31.03.2023, 15:00',
+            taskPriority: 'Niski',
+            taskDescription:
+                'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
+            taskDescriptionMaxLines: taskDescriptionMaxLines,
+            taskTitleMaxLines: taskTitleMaxLines,
+            taskDetailsContainerColor: taskDetailsContainerColor,
+            isTaskContainerExpanded: isTaskContainerExpanded,
+            onTaskContainerTap: () {
+              context.read<TaskWidgetCubit>().changeContainerExpansion(
+                    isTaskContainerExpanded: isTaskContainerExpanded,
+                  );
+            },
+          );
+        },
+      ),
     );
   }
 }
