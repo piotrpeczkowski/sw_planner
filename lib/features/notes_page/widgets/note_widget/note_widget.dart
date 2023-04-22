@@ -1,50 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sw_planner/core/enums.dart';
+import 'package:sw_planner/features/notes_page/widgets/note_widget/cubit/note_widget_cubit.dart';
 
-class NoteWidget extends StatefulWidget {
+class NoteWidget extends StatelessWidget {
   const NoteWidget({
     super.key,
   });
 
   @override
-  State<NoteWidget> createState() => _NoteWidgetState();
-}
-
-class _NoteWidgetState extends State<NoteWidget> {
-  Color _noteDetailsContainerColor = Colors.white;
-  bool _isNoteContainerExpanded = false;
-  int _noteDescriptionMaxLines = 3;
-  int _noteTitleMaxLines = 1;
-  @override
   Widget build(BuildContext context) {
-    return NoteWidgetBody(
-      noteId: '',
-      noteTitle: 'Przykładowy tytuł notatki',
-      noteEditDate: '10.03.2023',
-      noteDeadlineDate: '31.03.2023, 15:00',
-      notePriority: 'Niski',
-      noteDescription:
-          'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
-      noteDescriptionMaxLines: _noteDescriptionMaxLines,
-      noteTitleMaxLines: _noteTitleMaxLines,
-      noteDetailsContainerColor: _noteDetailsContainerColor,
-      isNoteContainerExpanded: _isNoteContainerExpanded,
-      onNoteContainerTap: () {
-        setState(() {
-          if (_isNoteContainerExpanded == false) {
-            _noteDetailsContainerColor =
-                const Color.fromARGB(255, 220, 239, 255);
-            _isNoteContainerExpanded = true;
-            _noteDescriptionMaxLines = 15;
-            _noteTitleMaxLines = 3;
-          } else {
-            _noteDetailsContainerColor = Colors.white;
-            _isNoteContainerExpanded = false;
-            _noteDescriptionMaxLines = 3;
-            _noteTitleMaxLines = 1;
+    return BlocProvider(
+      create: (context) => NoteWidgetCubit(),
+      child: BlocConsumer<NoteWidgetCubit, NoteWidgetState>(
+        listener: (context, state) {
+          if (state.status == Status.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: const Duration(seconds: 4),
+                backgroundColor: Colors.red,
+                content: Text(state.errorMessage),
+              ),
+            );
           }
-        });
-      },
+        },
+        builder: (context, state) {
+          final isNoteContainerExpanded = state.isExpanded;
+          final noteDetailsContainerColor = state.detailsContainerColor;
+          final noteTitleMaxLines = state.titleMaxLines;
+          final noteDescriptionMaxLines = state.descriptionMaxLines;
+          return NoteWidgetBody(
+            noteId: '',
+            noteTitle: 'Przykładowy tytuł notatki',
+            noteEditDate: '10.03.2023',
+            noteDeadlineDate: '31.03.2023, 15:00',
+            notePriority: 'Niski',
+            noteDescription:
+                'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
+            noteDescriptionMaxLines: noteDescriptionMaxLines,
+            noteTitleMaxLines: noteTitleMaxLines,
+            noteDetailsContainerColor: noteDetailsContainerColor,
+            isNoteContainerExpanded: isNoteContainerExpanded,
+            onNoteContainerTap: () {
+              context.read<NoteWidgetCubit>().changeContainerExpansion(
+                    isNoteContainerExpanded: isNoteContainerExpanded,
+                  );
+            },
+          );
+        },
+      ),
     );
   }
 }
