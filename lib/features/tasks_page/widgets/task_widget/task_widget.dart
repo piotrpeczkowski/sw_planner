@@ -27,9 +27,6 @@ class TaskWidget extends StatelessWidget {
         },
         builder: (context, state) {
           final isTaskContainerExpanded = state.isExpanded;
-          final taskDetailsContainerColor = state.detailsContainerColor;
-          final taskTitleMaxLines = state.titleMaxLines;
-          final taskDescriptionMaxLines = state.descriptionMaxLines;
           return TaskWidgetBody(
             taskId: '',
             taskTitle: 'Przykładowy tytuł taska',
@@ -38,9 +35,6 @@ class TaskWidget extends StatelessWidget {
             taskPriority: 'Niski',
             taskDescription:
                 'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
-            taskDescriptionMaxLines: taskDescriptionMaxLines,
-            taskTitleMaxLines: taskTitleMaxLines,
-            taskDetailsContainerColor: taskDetailsContainerColor,
             isTaskContainerExpanded: isTaskContainerExpanded,
             onTaskContainerTap: () {
               context.read<TaskWidgetCubit>().changeContainerExpansion(
@@ -62,11 +56,8 @@ class TaskWidgetBody extends StatelessWidget {
     required this.taskDeadlineDate,
     required this.taskPriority,
     required this.taskDescription,
-    required this.taskDescriptionMaxLines,
-    required this.taskTitleMaxLines,
     required this.onTaskContainerTap,
     required this.isTaskContainerExpanded,
-    required this.taskDetailsContainerColor,
     super.key,
   });
 
@@ -76,11 +67,8 @@ class TaskWidgetBody extends StatelessWidget {
   final String taskDeadlineDate;
   final String taskPriority;
   final String taskDescription;
-  final int taskDescriptionMaxLines;
-  final int taskTitleMaxLines;
   final Function() onTaskContainerTap;
   final bool isTaskContainerExpanded;
-  final Color taskDetailsContainerColor;
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +147,7 @@ class TaskWidgetBody extends StatelessWidget {
                         child: Text(
                           taskTitle,
                           overflow: TextOverflow.ellipsis,
-                          maxLines: taskTitleMaxLines,
+                          maxLines: isTaskContainerExpanded ? 3 : 11,
                           style: GoogleFonts.lato(
                             color: Colors.white,
                             fontSize: 16,
@@ -178,7 +166,9 @@ class TaskWidgetBody extends StatelessWidget {
                       bottomLeft: Radius.circular(10),
                       bottomRight: Radius.circular(10),
                     ),
-                    color: taskDetailsContainerColor,
+                    color: isTaskContainerExpanded
+                        ? const Color.fromARGB(255, 220, 239, 255)
+                        : Colors.white,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,7 +214,7 @@ class TaskWidgetBody extends StatelessWidget {
                             taskDescription,
                             style: GoogleFonts.lato(),
                             overflow: TextOverflow.ellipsis,
-                            maxLines: taskDescriptionMaxLines,
+                            maxLines: isTaskContainerExpanded ? 15 : 3,
                             textAlign: TextAlign.left,
                           ),
                         ],
