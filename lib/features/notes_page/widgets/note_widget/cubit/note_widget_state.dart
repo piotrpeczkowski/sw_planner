@@ -7,14 +7,10 @@ class NoteWidgetState {
     this.errorMessage = '',
     this.successMessage = '',
     this.isExpanded = false,
-    this.titleMaxLines = 1,
-    this.descriptionMaxLines = 3,
   });
 
   final Status status;
   final String errorMessage;
   final String successMessage;
   final bool isExpanded;
-  final int titleMaxLines;
-  final int descriptionMaxLines;
 }

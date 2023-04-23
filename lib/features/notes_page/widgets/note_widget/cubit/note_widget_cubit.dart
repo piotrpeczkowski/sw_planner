@@ -20,15 +20,11 @@ class NoteWidgetCubit extends Cubit<NoteWidgetState> {
         emit(const NoteWidgetState(
           status: Status.success,
           isExpanded: false,
-          titleMaxLines: 1,
-          descriptionMaxLines: 3,
         ));
       } else {
         emit(const NoteWidgetState(
           status: Status.success,
           isExpanded: true,
-          titleMaxLines: 3,
-          descriptionMaxLines: 15,
         ));
       }
     } on Exception catch (e) {

@@ -27,8 +27,6 @@ class NoteWidget extends StatelessWidget {
         },
         builder: (context, state) {
           final isNoteContainerExpanded = state.isExpanded;
-          final noteTitleMaxLines = state.titleMaxLines;
-          final noteDescriptionMaxLines = state.descriptionMaxLines;
           return NoteWidgetBody(
             noteId: '',
             noteTitle: 'Przykładowy tytuł notatki',
@@ -37,8 +35,6 @@ class NoteWidget extends StatelessWidget {
             notePriority: 'Niski',
             noteDescription:
                 'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
-            noteDescriptionMaxLines: noteDescriptionMaxLines,
-            noteTitleMaxLines: noteTitleMaxLines,
             isNoteContainerExpanded: isNoteContainerExpanded,
             onNoteContainerTap: () {
               context.read<NoteWidgetCubit>().changeContainerExpansion(
@@ -60,8 +56,6 @@ class NoteWidgetBody extends StatelessWidget {
     required this.noteDeadlineDate,
     required this.notePriority,
     required this.noteDescription,
-    required this.noteDescriptionMaxLines,
-    required this.noteTitleMaxLines,
     required this.onNoteContainerTap,
     required this.isNoteContainerExpanded,
     super.key,
@@ -73,8 +67,6 @@ class NoteWidgetBody extends StatelessWidget {
   final String noteDeadlineDate;
   final String notePriority;
   final String noteDescription;
-  final int noteDescriptionMaxLines;
-  final int noteTitleMaxLines;
   final Function() onNoteContainerTap;
   final bool isNoteContainerExpanded;
 
@@ -154,7 +146,7 @@ class NoteWidgetBody extends StatelessWidget {
                         child: Text(
                           noteTitle,
                           overflow: TextOverflow.ellipsis,
-                          maxLines: noteTitleMaxLines,
+                          maxLines: isNoteContainerExpanded ? 3 : 1,
                           style: GoogleFonts.lato(
                             color: Colors.white,
                             fontSize: 16,
@@ -174,7 +166,7 @@ class NoteWidgetBody extends StatelessWidget {
                       bottomRight: Radius.circular(10),
                     ),
                     color: isNoteContainerExpanded
-                        ? Color.fromARGB(255, 220, 239, 255)
+                        ? const Color.fromARGB(255, 220, 239, 255)
                         : Colors.white,
                   ),
                   child: Column(
@@ -187,7 +179,7 @@ class NoteWidgetBody extends StatelessWidget {
                             noteDescription,
                             style: GoogleFonts.lato(),
                             overflow: TextOverflow.ellipsis,
-                            maxLines: noteDescriptionMaxLines,
+                            maxLines: isNoteContainerExpanded ? 15 : 3,
                             textAlign: TextAlign.left,
                           ),
                         ],
