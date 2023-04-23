@@ -27,7 +27,6 @@ class NoteWidget extends StatelessWidget {
         },
         builder: (context, state) {
           final isNoteContainerExpanded = state.isExpanded;
-          final noteDetailsContainerColor = state.detailsContainerColor;
           final noteTitleMaxLines = state.titleMaxLines;
           final noteDescriptionMaxLines = state.descriptionMaxLines;
           return NoteWidgetBody(
@@ -40,7 +39,6 @@ class NoteWidget extends StatelessWidget {
                 'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
             noteDescriptionMaxLines: noteDescriptionMaxLines,
             noteTitleMaxLines: noteTitleMaxLines,
-            noteDetailsContainerColor: noteDetailsContainerColor,
             isNoteContainerExpanded: isNoteContainerExpanded,
             onNoteContainerTap: () {
               context.read<NoteWidgetCubit>().changeContainerExpansion(
@@ -66,7 +64,6 @@ class NoteWidgetBody extends StatelessWidget {
     required this.noteTitleMaxLines,
     required this.onNoteContainerTap,
     required this.isNoteContainerExpanded,
-    required this.noteDetailsContainerColor,
     super.key,
   });
 
@@ -80,7 +77,6 @@ class NoteWidgetBody extends StatelessWidget {
   final int noteTitleMaxLines;
   final Function() onNoteContainerTap;
   final bool isNoteContainerExpanded;
-  final Color noteDetailsContainerColor;
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +173,9 @@ class NoteWidgetBody extends StatelessWidget {
                       bottomLeft: Radius.circular(10),
                       bottomRight: Radius.circular(10),
                     ),
-                    color: noteDetailsContainerColor,
+                    color: isNoteContainerExpanded
+                        ? Color.fromARGB(255, 220, 239, 255)
+                        : Colors.white,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

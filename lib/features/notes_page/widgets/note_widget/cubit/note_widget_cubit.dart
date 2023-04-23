@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 import 'package:sw_planner/core/enums.dart';
 
 part 'note_widget_state.dart';
@@ -22,7 +22,6 @@ class NoteWidgetCubit extends Cubit<NoteWidgetState> {
           isExpanded: false,
           titleMaxLines: 1,
           descriptionMaxLines: 3,
-          detailsContainerColor: Colors.white,
         ));
       } else {
         emit(const NoteWidgetState(
@@ -30,7 +29,6 @@ class NoteWidgetCubit extends Cubit<NoteWidgetState> {
           isExpanded: true,
           titleMaxLines: 3,
           descriptionMaxLines: 15,
-          detailsContainerColor: Color.fromARGB(255, 220, 239, 255),
         ));
       }
     } on Exception catch (e) {

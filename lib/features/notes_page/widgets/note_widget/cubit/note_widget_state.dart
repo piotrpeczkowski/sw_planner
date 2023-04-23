@@ -9,7 +9,6 @@ class NoteWidgetState {
     this.isExpanded = false,
     this.titleMaxLines = 1,
     this.descriptionMaxLines = 3,
-    this.detailsContainerColor = Colors.white,
   });
 
   final Status status;
@@ -18,5 +17,4 @@ class NoteWidgetState {
   final bool isExpanded;
   final int titleMaxLines;
   final int descriptionMaxLines;
-  final Color detailsContainerColor;
 }
